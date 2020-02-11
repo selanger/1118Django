@@ -26,6 +26,7 @@ def testdemo(request,city,year1111111):
 def test(request,id,city):
     ## id 和 no 属于位置参数  只是 占位
     result = "%s,%s" %(id,city)
+    print(result)
     return HttpResponse(result)
 
 
