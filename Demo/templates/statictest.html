@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>静态文件的使用</title>
+{#    <link rel="stylesheet" href="../static/css/1.css">#}
+{#    <link rel="stylesheet" href="/static/css/1.css">#}
+    <link rel="stylesheet" href="{% static "css/1.css" %}">
+</head>
+<body>
+{#<img src="../static/img/gtl.jpg" alt="">#}
+{#<img src="/static/img/gtl.jpg" alt="">#}
+<img src="{% static "img/gtl.jpg" %}" alt="">
+<div>
+
+</div>
+
+
+
+
+
+</body>
+</html>

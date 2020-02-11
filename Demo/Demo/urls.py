@@ -26,5 +26,9 @@ urlpatterns = [
     # re_path("testdemo/(\d{4})/(\w*)/",testdemo),
     # re_path("testdemo/(?P<year>\d{4})/(?P<city>\w*)/",testdemo),
     re_path("test/(\d{4})/(?P<city>\w*)/",test),
+    re_path("indexhtml/(\d*)/",indexhtml),
+    path("getindex",getindex),
+    path("temptest/",temptest),
+    path("statictest/",statictest),
 
 ]

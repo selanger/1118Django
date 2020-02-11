@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模板语法</title>
+</head>
+<body>
+<h1>模板语法</h1>
+<h2>default</h2>
+姓名： {{ name |default:"wangwu" }} <br>
+<h2>cut的</h2>
+姓名：{{ name | cut:" liu" }}
+
+
+
+<h2>date</h2>
+时间：{{ now_time | date:"Y-m-d H:m:s" }} <br>
+
+
+
+姓名：{{ user_name }} <br>
+<h2>将首字母大写</h2>
+姓名：{{ user_name | capfirst }} <br>
+
+<h2>upper</h2>
+姓名：{{ user_name | upper }} <br>
+
+
+年龄：{{ age }} <br>
+<h3>将age增加10岁</h3>
+年龄：{{ age | add:10 }} <br>
+
+
+<h2>myjs</h2>
+{{ myjs | safe}} <br>
+
+
+
+
+
+
+爱好：{{ hobby }} <br>
+第一个爱好：{{ hobby.0 }}<br>
+
+分数：{{ score }}<br>
+{{ score.python }} <br>
+学科：{{ subject }}
+
+<h2>控制语句01</h2>
+{% if age > 18 %}
+    已经成年
+{% elif age == 18 %}
+    正好成年
+{% else %}
+    未成年
+{% endif %}
+
+<h3>控制语句02</h3>
+{% ifequal age 18 %}
+    刚好成年
+{% endifequal %}
+{% ifequal age 19 %}
+    年龄为19岁
+{% endifequal %}
+{% ifequal age 20 %}
+    <p>
+     20岁该结婚了
+    </p>
+{% endifequal %}
+
+
+
+<h2>for循环</h2>
+<h3>遍历列表</h3>
+{% for one in hobby %}
+    <p>
+        {{ one }}
+    </p>
+{% endfor %}
+
+<h3>循环字典</h3>
+{% for key,value in score.items %}
+    <p>
+    {{ key }}:{{ value }}
+    </p>
+{% endfor %}
+
+<h2>forloop</h2>
+{% for one in hobby %}
+    {#  forloop.counter  用于计数  #}
+    <p>{{ forloop.counter }}.{{ one }}</p>
+{% endfor %}
+
+<h2>forloop if for 一起使用</h2>
+{% for one in hobby %}
+    {#  第一条  #}
+    {% if forloop.first %}
+        <p style="color: red">{{ one }}</p>
+    {#  最后一条  #}
+    {% elif forloop.last %}
+        <p style="color: blue">{{ one }}</p>
+    {% else %}
+        <p style="color: green">{{ one }}</p>
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

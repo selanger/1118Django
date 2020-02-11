@@ -64,9 +64,15 @@ ROOT_URLCONF = 'Demo.urls'
 ## 模板的配置
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        ## 使用的模板引擎
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',  ## django的模板引擎
+        # 'BACKEND': 'django.template.backends.jinja2',  ## jinja2的模板引擎 flask
+        # 模板文件的目录配置  列表
+        'DIRS': [os.path.join(BASE_DIR,"templates")],
+        ## APP_DIRS 设置是否在子应用中自动寻找模板内容
+        ## 为True 自动从子应用中寻找模板内容
         'APP_DIRS': True,
+        ## 是一些针对后端的设置
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -131,4 +137,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 ## 静态文件的配置
+## 静态文件的路由
 STATIC_URL = '/static/'
+#  静态文件的目录地址
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR,"static"),
+)
