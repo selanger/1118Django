@@ -27,6 +27,7 @@ def test(request,id,city):
     ## id 和 no 属于位置参数  只是 占位
     result = "%s,%s" %(id,city)
     print(result)
+    print("git hub 远程")
     return HttpResponse(result)
 
 
