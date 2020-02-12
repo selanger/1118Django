@@ -6,6 +6,21 @@
 </head>
 <body>
 <h1>模板语法</h1>
+
+<h2>自定过滤器</h2>
+{% load myfiter %}
+{{ age }} <br>
+{{ age | MyAdd }} <br>
+{{ age | my_two_add:100 }}<br>
+{% mymanyadd age 10 10 10 %} <br>
+
+
+
+
+
+
+
+
 <h2>default</h2>
 姓名： {{ name |default:"wangwu" }} <br>
 <h2>cut的</h2>
