@@ -1,19 +1,19 @@
 from django.http import HttpResponse
-def index(request):
-    """
-    视图：作用
-    :param request:  形参 包含请求信息的请求对象
-    :return:    HttpResponse  响应对象
-    """
-    ## JsonReponse
-    return HttpResponse("hello world")
+# def index(request):
+#     """
+#     视图：作用
+#     :param request:  形参 包含请求信息的请求对象
+#     :return:    HttpResponse  响应对象
+#     """
+#     ## JsonReponse
+#     return HttpResponse("hello world")
 
-def about(request):
-    import time
-    now_time = time.localtime()
-    now_time = time.strftime("%Y-%m-%d %H:%M:%S",now_time)
-
-    return HttpResponse(now_time)
+# def about(request):
+#     import time
+#     now_time = time.localtime()
+#     now_time = time.strftime("%Y-%m-%d %H:%M:%S",now_time)
+#
+#     return HttpResponse(now_time)
 
 def retest(request,id):
     print(id)
@@ -116,17 +116,11 @@ def temptest(request):
     now_time = datetime.datetime.now()
     import time
 
-
     myjs = """
     <script>
         alert("myjs");
     </script>
     """
-
-
-
-
-
     return render_to_response("temptest.html",locals())
 
 
@@ -136,9 +130,23 @@ def statictest(request):
 
 
 
+def index(request):
+
+    return render_to_response("index.html")
 
 
+def about(request):
+    return render_to_response("about.html")
 
+def listpic(request):
+    return render_to_response("listpic.html")
+
+
+def base(request):
+    return render_to_response("base.html")
+
+def demo01(request):
+    return render_to_response("demo01.html")
 
 
 

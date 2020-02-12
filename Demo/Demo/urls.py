@@ -20,7 +20,7 @@ from .views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/',index),
-    path('about/',about),
+    path('about/',about,name="myabout"),
     re_path("^$",index),
     re_path("retest/(\d)/",retest),
     # re_path("testdemo/(\d{4})/(\w*)/",testdemo),
@@ -30,5 +30,8 @@ urlpatterns = [
     path("getindex",getindex),
     path("temptest/",temptest),
     path("statictest/",statictest),
+    path("listpic/",listpic),
+    path("base/",base),
+    path("demo01/",demo01),
 
 ]
