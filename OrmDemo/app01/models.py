@@ -40,6 +40,8 @@ class Publish(models.Model):
 class Book(models.Model):
     name = models.CharField(max_length=32,verbose_name="书名")
     pub = models.ForeignKey(to=Publish,to_field="id",on_delete=models.CASCADE)
+    num = models.IntegerField(default=0)
+    price = models.IntegerField(default=0)
     ## pub 外键创建好之后，表中表现为  pub_id
     class Meta:
         db_table = "book"
@@ -50,6 +52,20 @@ class Book(models.Model):
     # on_delete  代表当关联表（publish）中的数据被删除的时候，Book表要做什么行为
         # models.CASCADE 默认删除，当关联表中数据删除之后，要删除
         # models.PROTECT 保护的
+
+class Person(models.Model):
+    name = models.CharField(max_length=32,verbose_name="学生姓名")
+    age = models.IntegerField(verbose_name="年龄")
+    class Meta:
+        db_table="person"
+class Teacher(models.Model):
+    name = models.CharField(max_length=32,verbose_name="老师姓名")
+    gender = models.IntegerField(verbose_name="性别")   ### 1 代表 男， 0代表 女
+    age = models.IntegerField(verbose_name="年龄")
+    person = models.ManyToManyField(to=Person)
+    class Meta:
+        db_table = "teacher"
+
 
 
 
