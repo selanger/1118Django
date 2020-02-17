@@ -127,3 +127,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR,"static"),
 )
 
+MEDIA_URL = '/media/'
+# 文件上传的路径
+MEDIA_ROOT = os.path.join(BASE_DIR,'static')
