@@ -17,7 +17,7 @@
           <!-- 可用于内容模板 -->
         </div>
         <ul class="about_content">
-          <p> {{ article.content }}</p>
+          <p> {{ article.content | safe }}</p>
           <p><img src="/static/{{ article.picture }}"></p>
 {#          <p>“冥冥中该来则来，无处可逃”。 </p>#}
         </ul>

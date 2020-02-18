@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Article',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 MIDDLEWARE = [
@@ -110,13 +112,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
+USE_TZ = False
+
 
 
 # Static files (CSS, JavaScript, Images)
@@ -130,3 +135,8 @@ STATICFILES_DIRS = (
 MEDIA_URL = '/media/'
 # 文件上传的路径
 MEDIA_ROOT = os.path.join(BASE_DIR,'static')
+
+## ckeditor的上传地址
+CKEDITOR_UPLOAD_PATH = 'static/upload'
+## 图片处理使用 的 模块
+CKEDITOR_IMAGE_BACKEND = "pillow"

@@ -11,4 +11,11 @@ urlpatterns = [
     # path("add_article/",add_article),
     # path("articleinfo/",articleinfo),
     re_path("articleinfo/(?P<id>\d*)/",articleinfo),
+    path("request_demo/",request_demo),
+    path("get_test/",get_test),
+    path("post_test/",post_test),
+    path("getdemo/",getdemo),
+    path("qqtest/",qqtest),
+    path("postdemo/",postdemo),
+    path("register/",register),
 ]

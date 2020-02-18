@@ -19,7 +19,7 @@
           <div class="dttext f_l">
             <ul>
               <h2><a href="/article/articleinfo/{{ one.id }}/">{{ one.title }}</a></h2>
-              <p>{{ one.description }}</p>
+              <p>{{ one.description | safe }}</p>
               <span>{{ one.date }}</span>
             </ul>
           </div>
