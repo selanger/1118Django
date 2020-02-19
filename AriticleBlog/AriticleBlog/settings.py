@@ -136,7 +136,7 @@ MEDIA_URL = '/media/'
 # 文件上传的路径
 MEDIA_ROOT = os.path.join(BASE_DIR,'static')
 
-## ckeditor的上传地址
+## ckeditor的上传地址    fastdfs  由c语言编写的分布式的文件存储系统    七牛云
 CKEDITOR_UPLOAD_PATH = 'static/upload'
 ## 图片处理使用 的 模块
 CKEDITOR_IMAGE_BACKEND = "pillow"

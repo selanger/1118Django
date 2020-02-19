@@ -18,4 +18,8 @@ urlpatterns = [
     path("qqtest/",qqtest),
     path("postdemo/",postdemo),
     path("register/",register),
+    path("ajaxdemo/",ajaxdemo),
+    path("ajax_register/",ajax_register),
+    path("ajax_get_req/",ajax_get_req),
+    path("ajax_post_req/",ajax_post_req),
 ]

@@ -1,7 +1,7 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 ## RichTextField   底层是 TextField  只是修改前端的样式，能够将输入的内容以html的格式进行重新排版
-
+from ckeditor_uploader.fields import RichTextUploadingField     ### 支持文件上传
 
 
 
@@ -43,7 +43,8 @@ class Type(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=32,verbose_name="标题")
     date = models.DateField(auto_now=True,verbose_name="创建时间")
-    content = RichTextField(verbose_name="内容")
+    # content = RichTextField(verbose_name="内容")
+    content = RichTextUploadingField()
     description = RichTextField(verbose_name="描述")
     # content = models.TextField(verbose_name="内容")
     # description = models.TextField(verbose_name="文章描述")
