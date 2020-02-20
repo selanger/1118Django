@@ -22,4 +22,10 @@ urlpatterns = [
     path("ajax_register/",ajax_register),
     path("ajax_get_req/",ajax_get_req),
     path("ajax_post_req/",ajax_post_req),
+    path("set_cookie/",set_cookie),
+    path("get_cookie/",get_cookie),
+    path("delete_cookie/",delete_cookie),
+    path("set_session/",set_session),
+    path("get_session/",get_session),
+    path("delete_session/",delete_session),
 ]

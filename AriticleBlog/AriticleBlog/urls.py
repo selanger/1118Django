@@ -17,11 +17,16 @@ from django.contrib import admin
 from django.urls import path,include,re_path
 from django.conf.urls.static import static
 from . import settings
+from Article.views import login,index,logout
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("article/",include("Article.urls")),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    path("login/",login),
+    path("logout/",logout),
+    re_path("^$",index),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

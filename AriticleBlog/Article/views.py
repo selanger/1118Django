@@ -6,6 +6,24 @@ from django.core.paginator import Paginator
 # Create your views here.
 
 import hashlib
+
+## 登录装饰器
+def loginValid(func):
+    def inner(request,*args,**kwargs):
+        ## 校验用户的身份
+        cookie_username = request.COOKIES.get("username")
+        session_username = request.session.get("username")
+        if cookie_username and session_username and cookie_username == session_username:
+            return func(request,*args,**kwargs)
+        else:
+            return HttpResponseRedirect("/login/")
+    return inner
+
+
+
+
+
+
 ## 密码 加密  md5
 def setPassword(password):
     ### 需要实例化  md5 对象
@@ -15,35 +33,22 @@ def setPassword(password):
     result = md5.hexdigest()  ## 得到一个 16进制的加密结果
     return result
 
-
+@loginValid
 def index(request):
     ## 返回数据
     ## 1、 返回6条文章数据   排序  按照时间逆序
+
+
     article = Article.objects.order_by("-date")[:6]
-    ##
-    # one = article[0]
-    # print(one)
-    # print(one.author)
-    # print(one.type.first())
 
-
-
-    ## 2、 返回图文推荐文章内容  7条
-    ##  图文推荐： 获取到推荐的文章   数据库中应该有推荐的字段 标识
+    ## 2、 返回图文推荐文章内容  7条 图文推荐： 获取到推荐的文章   数据库中应该有推荐的字段 标识
     recommend_article = Article.objects.filter(recommend=1).order_by("-date")[:7]
-
-
-
-    ## 3、 点击排行12条内容
-    ## 有点击率
-    ##  按照点击率进行逆序
+    ## 3、 点击排行12条内容 有点击率 按照点击率进行逆序
     click_article = Article.objects.order_by("-click")[:12]
-
-
-
     return render_to_response("index.html",locals())
 
 
+@loginValid
 def about(request):
     return render_to_response("about.html")
 
@@ -325,6 +330,101 @@ def ajax_post_req(request):
     else:
         result = {"code": 10001, "msg": "请求参数为空"}
     return JsonResponse(result)
+
+## 下发cookie
+def set_cookie(request):
+
+    # return HttpResponse("设置cookie")
+    # response = HttpResponse("设置cookie")
+    response = render(request,"index.html")
+
+    ## 设置cookie
+    ## 1、 如果需要设置多个cookie 再写一行进行设置
+    ## 2、cookie中不要使用中文
+    response.set_cookie("username","zhangshan",max_age=60)
+    response.set_cookie("age",19)
+    return response
+## 获取cookie
+def get_cookie(request):
+    data = request.COOKIES
+    username = request.COOKIES.get("username")
+    age = request.COOKIES.get("age")
+    print(username)
+    print(age)
+    return HttpResponse("获取cookie")
+
+def delete_cookie(request):
+    ## 删除cookie
+    response = HttpResponse("删除cookie")
+    ## 参数为  要删除cookie的key
+    response.delete_cookie("username")
+    response.delete_cookie("age")
+    return response
+
+
+    # return HttpResponse("删除cookie")
+
+def set_session(request):
+    ## 设置session
+    request.session["username"] = "zhangsan"
+
+    return HttpResponse("设置session")
+
+def get_session(request):
+    username = request.session.get("username")
+    return HttpResponse(username)
+
+def delete_session(request):
+    username = request.session.get("username")
+    print(username)
+
+    del request.session["username"]
+
+    return HttpResponse("删除session")
+
+from django.http import HttpResponseRedirect
+def login(request):
+    ## 判断登录
+    if request.method == "POST":
+        ## 获取值
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        if username and password:
+            ## 校验账号密码是否正确
+            # flag = User.objects.filter(username=username,password=setPassword(password)).exists()
+            user = User.objects.filter(username=username,password=setPassword(password)).first()
+            if user:
+                ## True
+                # return HttpResponse("登录成功")
+                # response = HttpResponse("登录成功")
+                ## 参数：  要跳转的路径
+                # response = HttpResponseRedirect("/article/index/")
+                response = HttpResponseRedirect("/")
+                ## 重定向到  首页
+                ## 下发cookie 和session
+                response.set_cookie("username",user.username)
+                response.set_cookie("user_id",user.id)
+                request.session["username"] = user.username
+                return response
+            else:
+                return HttpResponse("账号密码不正确")
+        else:
+            ## 参数为空
+            return HttpResponse("账号密码 不能为空")
+    return render(request,"login.html")
+
+
+## 退出
+def logout(request):
+    ## 删除cookie 和session
+    ## 重定向到登录页
+    response = HttpResponseRedirect("/login/")
+    response.delete_cookie("username")
+    del request.session["username"]
+
+    return response
+
+
 
 
 
