@@ -1,5 +1,5 @@
 from django.shortcuts import render,render_to_response
-from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
+from django.http import HttpResponse
 from .models import *
 from django.core.paginator import Paginator
 
@@ -58,31 +58,32 @@ def listpic(request):
 
 def newslistpic(request,page):
     ## 查询文章
-    # article = Article.objects.all().order_by("id")    ## query set
-    ## 根据类型对数据进行查询
-    ## 获取类型
-    article_type= request.GET.get("type")
-    print(article_type)
-    ## 根据类型查询到该类型下的文章
-    A_type = Type.objects.filter(name=article_type).first()
-    article = A_type.article_set.all()
-    print(article)
-    ## 将文章返回
-
-
+    article = Article.objects.all().order_by("id")    ## query set
     pagnitor_obj = Paginator(article,6)
     page_obj = pagnitor_obj.page(page)
+    ## 通过遍历  pagnitor_obj.page_range -> range(1,11)
+    ## 解决 页码数量多 方法  修改 pagnitor_obj.page_range  1  11
+
+    ## 获取当前的页码     3 4 5 6 7 8      [2,7]
+    ##       0 1 2 3 4 5
+    ##  2      1 2 3 4 5
+    ## 1      1 2 3 4 5
+    ## 17      13 14 15 16 17
     page_num = page_obj.number
+    ## start
     start = page_num - 2
     if start <= 2:
         start = 1
         end = start + 5
+    ## end
     else:
         end = page_num + 3
-        if end >= pagnitor_obj.num_pages:
+        if end >= pagnitor_obj.num_pages:  ## 17 range(start,17)
             end = pagnitor_obj.num_pages + 1
             start = end - 5
+    # page_range = pagnitor_obj.page_range[start:end]
     page_range = range(start,end)
+
     return render_to_response("newslistpic.html",locals())
 ## 文章详情
 def articleinfo(request,id):
@@ -94,6 +95,142 @@ def articleinfo(request,id):
     article.save()
 
     return render_to_response("articleinfo.html",locals())
+
+
+def fy_test(request,page):
+    print(page)
+
+
+    ## 查询文章的方法
+    article = Article.objects.all().order_by("id")
+    # print(article)
+    ## Paginator(数据集，每页展示的条数)
+    paginator_obj = Paginator(article,10)
+    print(paginator_obj)
+    # print(paginator_obj.count)    ### 数据的总条数
+    # print(paginator_obj.num_pages)   ###  总页数
+    # print(paginator_obj.page_range)   ##  range(1, 4)
+
+    page_obj = paginator_obj.page(page)
+    # print(page_obj)   #   <Page 1 of 11>
+    ## 循环遍历  得到分页之后的数据
+    for one in page_obj:
+        print(one)
+    # print(page_obj.has_next())    ## 是否有下一页  True  False
+    # print(page_obj.has_previous())    ## 是否有上一页  True  False
+    # print(page_obj.number)    ## 返回当前所在的页码
+    # print(page_obj.previous_page_number())   ## 上一页的页码
+    # print(page_obj.next_page_number())     ## 下一页的页码
+    # print(page_obj.has_other_pages())   ## 是否有其他的页
+
+    return HttpResponse("fy test")
+
+
+
+
+## 增加多条数据
+def add_article(request):
+
+    for i in range(100):
+        article = Article()
+        article.title = "title_%s" % i
+        article.content = "content_%s" % i
+        article.description = "description_%s" % i
+        article.author = Author.objects.get(id =1)
+        article.save()
+        ## 多对多关系中   add
+        article.type.add(Type.objects.get(id = 1))
+        article.save()
+
+    return HttpResponse("add article")
+
+
+
+
+
+
+
+def choices_test(request):
+    data = Author.objects.get(id =1)
+    gender = data.gender
+    print(gender)
+    gender = data.get_gender_display()
+    print(gender)
+
+
+    return HttpResponse("choices_test")
+
+
+def request_demo(request):
+    ## 学习请求 提供的方法
+    # print(dir(request))
+    """
+    ['COOKIES', 'FILES', 'GET', 'META', 'POST', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__iter__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_current_scheme_host', '_encoding', '_get_full_path', '_get_post', '_get_raw_host', '_get_scheme', '_initialize_handlers', '_load_post_and_files', '_mark_post_parse_error', '_messages', '_read_started', '_set_post', '_stream', '_upload_handlers', 'body', 'build_absolute_uri', 'close', 'content_params', 'content_type', 'csrf_processing_done', 'encoding', 'environ', 'get_full_path', 'get_full_path_info', 'get_host', 'get_port', 'get_raw_uri', 'get_signed_cookie', 'headers', 'is_ajax', 'is_secure', 'method', 'parse_file_upload', 'path', 'path_info', 'read', 'readline', 'readlines', 'resolver_match', 'scheme', 'session', 'upload_handlers', 'user', 'xreadlines']
+
+    """
+    # print(request.COOKIES)   ###  标识用户的身份
+    # print(request.FILES)    ###  上传的文件例如： 图片，文档
+    ## GET  get请求传递的参数
+    # name = request.GET.get("name")
+    # age = request.GET.get("age")
+    # print(name)
+    # print(age)
+    # print(request.method)
+    # print(request.scheme)
+    # print(request.path)
+    print(request.META)
+    print(request.META.get("HTTP_REFERER"))
+    # print(request.META.get("OS"))
+    print(request.META.get("HTTP_HOST"))
+    return HttpResponse("request demo")
+
+
+def get_test(request):
+    data = request.GET
+    print(data)
+    name = request.GET.get("name")
+    age = request.GET.get("age")
+    return HttpResponse("get_test，姓名为{}，年龄为{}".format(name,age))
+
+def post_test(request):
+    data = request.POST
+    print(data)
+    name = request.POST.get("name")
+    age = request.POST.get("age")
+    return HttpResponse("posttest 姓名{} 年龄{}".format(name,age))
+
+def getdemo(request):
+    # data = request.GET
+    # print(data)
+    # search = request.GET.get("search")
+    # print(search)
+    # data = request.GET.getlist("search")
+    # print(data)
+
+    ## 接收请求  处理请求   返回响应
+    ## 获取到关键字
+    search = request.GET.get("search")
+    ## 查询数据库  得到文章的标题
+    if search:
+        ## 查询数据库
+        article = Article.objects.filter(title__contains=search).values("title")
+        if len(article) == 0:
+            article = "没有对应的文章"
+    ## 返回结果
+
+    return render_to_response("getdemo.html",locals())
+
+def qqtest(request):
+    return  render_to_response("qqtest.html")
+
+
+def postdemo(request):
+    username = request.POST.get("username")
+    password = request.POST.get("passwd")
+    print(username)
+    print(password)
+    # return render_to_response("postdemo.html")
+    return render(request,"postdemo.html")
 
 from .forms import UserForm
 def register(request):
@@ -124,6 +261,15 @@ def register(request):
             ## 校验失败
             message = data.errors
     return render(request,"register.html",locals())
+
+
+def ajaxdemo(request):
+    return render(request,"ajaxdemo.html")
+
+
+
+## json
+from django.http import JsonResponse
 
 ## 返回  ajax 注册的页面
 def ajax_register(request):
@@ -185,6 +331,58 @@ def ajax_post_req(request):
         result = {"code": 10001, "msg": "请求参数为空"}
     return JsonResponse(result)
 
+## 下发cookie
+def set_cookie(request):
+
+    # return HttpResponse("设置cookie")
+    # response = HttpResponse("设置cookie")
+    response = render(request,"index.html")
+
+    ## 设置cookie
+    ## 1、 如果需要设置多个cookie 再写一行进行设置
+    ## 2、cookie中不要使用中文
+    response.set_cookie("username","zhangshan",max_age=60)
+    response.set_cookie("age",19)
+    return response
+## 获取cookie
+def get_cookie(request):
+    data = request.COOKIES
+    username = request.COOKIES.get("username")
+    age = request.COOKIES.get("age")
+    print(username)
+    print(age)
+    return HttpResponse("获取cookie")
+
+def delete_cookie(request):
+    ## 删除cookie
+    response = HttpResponse("删除cookie")
+    ## 参数为  要删除cookie的key
+    response.delete_cookie("username")
+    response.delete_cookie("age")
+    return response
+
+
+    # return HttpResponse("删除cookie")
+
+def set_session(request):
+    ## 设置session
+    request.session["username"] = "zhangsan"
+
+    return HttpResponse("设置session")
+
+def get_session(request):
+    username = request.session.get("username")
+    return HttpResponse(username)
+
+def delete_session(request):
+    username = request.session.get("username")
+    print(username)
+
+    del request.session["username"]
+
+    return HttpResponse("删除session")
+
+from django.http import HttpResponseRedirect
 def login(request):
     ## 判断登录
     if request.method == "POST":
@@ -215,6 +413,7 @@ def login(request):
             return HttpResponse("账号密码 不能为空")
     return render(request,"login.html")
 
+
 ## 退出
 def logout(request):
     ## 删除cookie 和session
@@ -228,29 +427,4 @@ def logout(request):
 
 
 
-
-
-
-
-def search_artilce(request):
-    search_key = request.GET.get("search_key")
-    page = request.GET.get("page",1)
-    if search_key:
-        article = Article.objects.filter(title__contains=search_key).all()
-
-        pagnitor_obj = Paginator(article, 10)
-        page_obj = pagnitor_obj.page(page)
-        page_num = page_obj.number
-        start = page_num - 2
-        if start <= 2:
-            start = 1
-            end = start + 5
-        else:
-            end = page_num + 3
-            if end >= pagnitor_obj.num_pages:
-                end = pagnitor_obj.num_pages + 1
-                start = end - 5
-        page_range = range(start, end)
-
-    return render(request,"newslistpic.html",locals())
 

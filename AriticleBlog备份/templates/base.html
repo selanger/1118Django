@@ -24,8 +24,8 @@
     <div class="contenttop">
       <div class="logo f_l">个人博客模板古典系列之――江南墨卷</div>
       <div class="search f_r">
-        <form action="/article/search_artilce/" name="searchform" id="searchform">
-          <input name="search_key" id="keyboard" class="input_text" value="请输入关键字" style="color: rgb(153, 153, 153);" onfocus="if(value=='请输入关键字'){this.style.color='#000';value=''}" onblur="if(value==''){this.style.color='#999';value='请输入关键字'}" type="text">
+        <form action="/e/search/index.php" method="post" name="searchform" id="searchform">
+          <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字" style="color: rgb(153, 153, 153);" onfocus="if(value=='请输入关键字'){this.style.color='#000';value=''}" onblur="if(value==''){this.style.color='#999';value='请输入关键字'}" type="text">
           <input name="show" value="title" type="hidden">
           <input name="tempid" value="1" type="hidden">
           <input name="tbname" value="news" type="hidden">
@@ -46,11 +46,11 @@
             </li>
             <li><a href="#">我的日记</a>
               <ul>
-                <li><a href="/article/newslistpic/1/?type=个人日记">个人日记</a></li>
-                <li><a href="/article/newslistpic/1/?type=学习笔记">学习笔记</a></li>
+                <li><a href="/article/newslistpic/1/">个人日记</a></li>
+                <li><a href="newslistpic.html">学习笔记</a></li>
               </ul>
             </li>
-            <li><a href="/article/newslistpic/1/?type=技术文章">技术文章</a> </li>
+            <li><a href="newslistpic.html">技术文章</a> </li>
             <li><a href="#">给我留言</a> </li>
           </ul>
         </div>

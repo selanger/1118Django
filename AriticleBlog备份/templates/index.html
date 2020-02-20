@@ -8,7 +8,7 @@
     <div class="bloglist f_l">
       {% for one in article %}
         <h3><a href="/article/articleinfo/{{ one.id }}/">{{ one.title }}</a></h3>
-      <figure><img src="/static/{{ one.picture}}" alt="{{ one.title }}"></figure>
+      <figure><img src="/static/images/img_1.jpg" alt="{{ one.title }}"></figure>
       <ul>
         <p> {{ one.description | safe }}</p>
         <a title="【心路历程】请不要在设计这条路上徘徊啦" href="/article/articleinfo/{{ one.id }}/" target="_blank" class="readmore">阅读全文&gt;&gt;</a>

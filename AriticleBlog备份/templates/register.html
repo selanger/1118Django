@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+
+{#<form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    用户名： <input type="text" name="username"> <br>#}
+{#    密码: <input type="password" name="passwd"> <br>#}
+{#    <input type="submit" value="注册">#}
+{#</form>#}
+{##}
+{#<p>#}
+{#    {{ message }}#}
+{#</p>#}
+{##}
+{#<p>#}
+{#    <h2>常规样式</h2>#}
+{#    {{ userform }}#}
+{#    <hr>#}
+{#</p>#}
+{##}
+{#<p>#}
+{#    <h2>p标签样式</h2>#}
+{#    {{ userform.as_p }}#}
+{#    <hr>#}
+{#</p>#}
+{##}
+{#<p>#}
+{#    <h2>ul标签样式</h2>#}
+{#    {{ userform.as_ul }}#}
+{#    <hr>#}
+{#</p>#}
+{##}
+{#<p>#}
+{#    <h2>table标签样式</h2>#}
+{#    {{ userform.as_table }}#}
+{#    <hr>#}
+{#</p>#}
+
+<div>
+    <h2>自定义样式</h2>
+ <form action="" method="post">
+ {% csrf_token %}
+    <table>
+
+        {% for one in userform %}
+        <tr>
+            <th>{{ one.label }}</th>
+            <td>{{ one }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>提交</th>
+            <td>
+                <input type="submit" value="注册">
+            </td>
+        </tr>
+
+    </table>
+ </form>
+</div>
+
+
+<p>
+    {{ message }}
+</p>
+
+</body>
+</html>

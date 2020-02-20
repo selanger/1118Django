@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title%}
+    个人博客模板古典系列之――江南墨卷
+{% endblock%}
+
+{% block style %}
+    <link href="/static/css/main.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="container">
+  <div class="con_content">
+    <div class="about_box">
+      <h2 class="nh1"><span>您现在的位置是：<a href="/" target="_blank">网站首页</a>>><a href="#" target="_blank">个人日记</a></span><b>个人日记</b></h2>
+      <div class="dtxw box">
+
+          {% for one in page_obj %}
+
+            <li>
+          <div class="dttext f_l">
+            <ul>
+              <h2><a href="/article/articleinfo/{{ one.id }}/">{{ one.title }}</a></h2>
+              <p>{{ one.description | safe }}</p>
+              <span>{{ one.date }}</span>
+            </ul>
+          </div>
+          <div class="xwpic f_r"><a href="/"><img src="/static/{{ one.picture }}"></a></div>
+        </li>
+          {% endfor %}
+
+      </div>
+{#      <div class="pagelist">#}
+{#          页次：1/1 每页25 总数10#}
+{#          <a href="/">首页</a>#}
+{#          <a href="/">上一页</a>#}
+{#          <a href="/">下一页</a>#}
+{#          <a href="/">尾页</a>#}
+{#      </div>#}
+        <div class="pagelist">
+        {% if page_obj.has_previous  %}
+            <a href="/article/newslistpic/1/">首页</a>
+            <a href="/article/newslistpic/{{ page_obj.previous_page_number }}/">上一页</a>
+        {% endif %}
+
+            {% for page in page_range %}
+                {% if page == page_obj.number %}
+                    <a href="/article/newslistpic/{{ page }}/" style="color:red;">{{ page }}</a>
+                {% else %}
+                    <a href="/article/newslistpic/{{ page }}/">{{ page }}</a>
+                {% endif %}
+            {% endfor %}
+
+        {% if page_obj.has_next %}
+             <a href="/article/newslistpic/{{ page_obj.next_page_number }}/">下一页</a>
+            <a href="/article/newslistpic/{{ pagnitor_obj.num_pages }}/">尾页</a>
+        {% endif %}
+        </div>
+
+
+
+
+    </div>
+  </div>
+  <div class="blank"></div>
+  <!-- container代码 结束 -->
+
+
+</div>
+
+{% endblock %}
+
+
+
