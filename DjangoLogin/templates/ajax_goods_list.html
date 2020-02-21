@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+</head>
+<body>
+<h2>商品的名字</h2>
+<p id="content">
+
+</p>
+
+<script>
+    // 打开页面自动请求 api 接口 获取数据
+    $.ajax({
+        url:"http://127.0.0.1:8000/loginuser/goods_list_api/5/1/",
+        type:"get",
+        data:"",
+        success:function (data) {
+           //console.log(data);
+           console.log(data["data"]);
+
+           for (var i in data["data"]){
+               console.log(data["data"][i]["goods_name"]);
+                var goods_name = "<p>"+ data["data"][i]["goods_name"] + "</p>";
+                $("#content").append(goods_name);
+           };
+
+        },
+        error:function (error) {
+            console.log(error)
+        }
+    })
+</script>
+
+</body>
+</html>
