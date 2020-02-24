@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,re_path,include
-from LoginUser.views import register,login,index,logout
+from LoginUser.views import register,login,index,logout,GoodsView,gettoken
+from django.views.decorators.csrf import csrf_exempt
+
+from LoginUser.urls import router
 
 
 urlpatterns = [
@@ -25,5 +28,16 @@ urlpatterns = [
     path("logout/",logout),
 
     re_path("^$",index),
+
     path("loginuser/",include("LoginUser.urls")),
+    # path("goodsview/",csrf_exempt(GoodsView.as_view())),
+    path("goodsview/",GoodsView.as_view()),
+    path("gettoken/",gettoken),
 ]
+
+##
+urlpatterns += router.urls
+
+
+
+

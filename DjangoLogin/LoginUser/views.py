@@ -91,7 +91,8 @@ def goods_list(request,status,page=1):
     goods_obj = Paginator(goods,8)
     goods_list = goods_obj.page(page)
 
-    return render(request,"goods_list.html",locals())
+    # return render(request,"goods_list.html",locals())
+    return render(request,"goods_list_vue.html")
 
 ## 修改商品的状态
 def goods_status(request,id,status):
@@ -155,6 +156,9 @@ def goods_list_ajax(request):
 
 
 
+def vue_demo(request):
+    name = "lisi"
+    return render(request,"vue_demo.html",locals())
 
 
 
@@ -182,4 +186,164 @@ def goods_list_ajax(request):
 #     return HttpResponse("add goods")
 #
 #
+
+from django.views import View
+## 类视图
+class GoodsView(View):
+
+    def __init__(self):
+        super(GoodsView, self).__init__()
+        # 统一返回结构
+        self.result= {
+            "version":"v1",
+            "methods":"",
+            "data":"",
+            "msg":"",
+            "code":""
+        }
+        self.obj = Goods
+
+    ## 处理get请求
+    def get(self,request):
+        # result = {"methods":"get请求"}
+        ## 获取id
+        id = request.GET.get("id")
+        if id:
+            ## id存在的情况  返回这个id 对应的数据
+            goods = self.obj.objects.filter(id=id).first()
+            # print(goods)
+            # result["data"] = goods  将对象直接返回，报错，因为不能够被json序列化
+            data = {
+                "goods_number":goods.goods_number,
+                "goods_name":goods.goods_name,
+                "goods_price":goods.goods_price,
+                "goods_count":goods.goods_count,
+                "goods_location":goods.goods_location,
+                "goods_safe_date":goods.goods_safe_date,
+                "goods_status":goods.goods_status,
+            }
+            # result["data"] = data
+        else:
+            ## id 不存在，返回所有的商品信息
+            goods = self.obj.objects.all()
+            data = []
+            for one in goods:
+                res = {
+                    "goods_number": one.goods_number,
+                    "goods_name": one.goods_name,
+                    "goods_price": one.goods_price,
+                    "goods_count": one.goods_count,
+                    "goods_location": one.goods_location,
+                    "goods_safe_date": one.goods_safe_date,
+                    "goods_status": one.goods_status,
+                }
+                data.append(res)
+            # result["data"] = data
+        self.result["methods"] = "get请求"
+        self.result["data"]= data
+        self.result["code"] = 10000
+        self.result["msg"] = "请求成功"
+        return JsonResponse(self.result)
+    ## 处理post请求
+    def post(self,request):
+        # 提交数据，保存数据
+        data = request.POST
+        goods = Goods()
+        goods.goods_number = data.get("goods_number")
+        goods.goods_name = data.get("goods_name")
+        goods.goods_price = data.get("goods_price")
+        goods.goods_count = data.get("goods_count")
+        goods.goods_location = data.get("goods_location")
+        goods.goods_safe_date = data.get("goods_safe_date")
+        goods.save()
+
+        self.result["methods"] = "post请求"
+        self.result["data"]= {"id":goods.id}
+        self.result["code"] = 10000
+        self.result["msg"] = "保存数据成功"
+        return JsonResponse(self.result)
+    ## 处理put请求
+    def put(self,request):
+
+        ## 获取id
+        ##  put 请求参数如何获取，不在GET中，也不在post而是在body中
+        import json
+        # data = request.body    ## b''   b'{"id":1}'   bytes
+        # ## 将bytes 类型 转化为 string
+        # data = data.decode()
+        # print(data)
+        # data = json.loads(data)
+        # print(data)
+        # id = data.get("id")
+        # print(id)
+        data = json.loads(request.body.decode())
+        ## 需求： 通过id 修改某个商品的名字
+        id = data.get("id")
+        goods_name = data.get("goods_name")
+        # 判断
+        flag = Goods.objects.filter(id=id).exists()
+        if flag:
+            ## 存在
+            ## 修改
+            Goods.objects.filter(id=id).update(goods_name=goods_name)
+
+            self.result["methods"] = "put请求"
+            self.result["data"]= {"id":id}
+            self.result["code"] = 10000
+            self.result["msg"] = "修改数据成功"
+        else:
+            ## 不存在
+            self.result["methods"] = "put请求"
+            self.result["data"]= {"id":id}
+            self.result["code"] = 10001
+            self.result["msg"] = "商品不存在"
+
+        return JsonResponse(self.result)
+
+    ## 处理delete 请求你
+    def delete(self,request):
+        ## delete请求的参数  在 body中
+        import json
+        data = json.loads(request.body.decode())
+        id = data.get("id")
+        ## 删除操作
+        Goods.objects.filter(id = id).delete()
+        self.result["methods"] = "delete请求"
+        self.result["data"] = {"id": id}
+        self.result["code"] = 10000
+        self.result["msg"] = "商品删除成功"
+        return JsonResponse(self.result)
+
+from django.middleware.csrf import get_token
+## 获取csrftokoen
+def gettoken(request):
+    token = get_token(request)
+    return JsonResponse({"token":token})
+
+
+from .serializers import GoodsSerializers
+from rest_framework import mixins,viewsets
+
+class GoodsViews(mixins.CreateModelMixin,     ## 创建
+                 mixins.UpdateModelMixin,     ## 更新
+                 mixins.DestroyModelMixin,    ## 删除
+                 mixins.ListModelMixin,       ###列表
+                 mixins.RetrieveModelMixin,   ## 检索
+                 viewsets.GenericViewSet):    ## rest的基类
+    queryset = Goods.objects.all()     ## 返回的数据
+    serializer_class = GoodsSerializers
+
+from .serializers import UserSerializers
+class UserViews(mixins.CreateModelMixin,     ## 创建
+                 mixins.UpdateModelMixin,     ## 更新
+                 mixins.DestroyModelMixin,    ## 删除
+                 mixins.ListModelMixin,       ###列表
+                 mixins.RetrieveModelMixin,   ## 检索
+                 viewsets.GenericViewSet):    ## rest的基类
+    queryset = LoginUser.objects.all()     ## 返回的数据
+    serializer_class = UserSerializers
+
+
+
+
 

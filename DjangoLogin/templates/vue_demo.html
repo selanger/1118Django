@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue_demo</title>
+    <script src="/static/js/vue.min.js"></script>
+</head>
+<body>
+<!-- vue的语法和django的语法相似， {{ name  }}实际上还是Django的模板语法-->
+{% verbatim myblock %}   <!--通过这个标签，标签内部django语法失效，使用的是vue的语法-->
+<div id="content">
+    <p>
+        数据绑定
+        姓名：{{ name }}
+        年龄：{{ age }}
+    </p>
+
+    <p id="1" style="height: 100px;color: red;">
+        属性的绑定
+    </p>
+    <p v-bind:id="id" v-bind:style="mystyle">
+        属性的绑定
+    </p>
+    <p v-if="flag">
+        <!-- 判断绑定，从data数据中取出 flag 的值进行判断，如果为true 则显示下面的内容-->
+        判断绑定
+    </p>
+    <p v-for="one in python_list">
+        <!-- for one in python_list-->
+        循环绑定  {{ one }}
+    </p>
+    <p v-for="one in mylist">
+        循环绑定
+        {{ one.name }}
+        {{ one.age }}
+    </p>
+    <p v-on:click="print">
+        事件绑定
+    </p>
+
+
+</div>
+{% endverbatim myblock %}
+
+<script>
+    // 创建一个vue对象
+    var vue = new Vue(
+        {
+            el:"#content",   //  选中元素
+            data:{     //   准备绑定的数据  属性
+                name:"张三",
+                age:18,
+                id:800,
+                mystyle:"height: 100px;color: red;",
+                flag:false,
+                python_list:[1,2,3,4,5,6],
+                mylist:[
+                    {"name":"zhangsan","age":19},
+                    {"name":"lisi","age":119},
+                    {"name":"wangwu","age":29},
+                ]
+            },
+            methods:{
+                print:function () {
+                    alert("ok")
+                }
+            }
+        }
+    )
+
+
+
+
+
+</script>
+</body>
+</html>
