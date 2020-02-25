@@ -29,6 +29,7 @@ class Goods(models.Model):
     goods_safe_date = models.IntegerField(verbose_name="商品保质期")
     goods_pro_time = models.DateTimeField(auto_now=True,verbose_name="生成日期")
     goods_status = models.IntegerField(verbose_name="商品状态",default=1)   ## 0代表下架  1 代表在售
+
     class Meta:
         db_table = "goods"
 

@@ -11,7 +11,6 @@ def setPassword(password):
     result = md5.hexdigest()
 
     return result
-
 ## 登录装饰器
 def loginValid(func):
     def inner(request,*args,**kwargs):
@@ -23,10 +22,7 @@ def loginValid(func):
         else:
             return HttpResponseRedirect("/login/")
     return inner
-
-
-
-
+## 注册
 def register(request):
     ## 接收参数
     password = request.POST.get("password")
@@ -42,7 +38,7 @@ def register(request):
         message = "参数为空"
 
     return render(request,"register.html",locals())
-
+## 登录
 def login(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -61,13 +57,10 @@ def login(request):
             message = "参数为空"
 
     return render(request,"login.html",locals())
+## 首页
 @loginValid
 def index(request):
     return render(request,"index.html")
-
-
-def base(request):
-    return render(request,"base.html")
 
 ##   退出
 def logout(request):
@@ -92,7 +85,7 @@ def goods_list(request,status,page=1):
     goods_list = goods_obj.page(page)
 
     # return render(request,"goods_list.html",locals())
-    return render(request,"goods_list_vue.html")
+    return render(request,"goods_list.html")
 
 ## 修改商品的状态
 def goods_status(request,id,status):

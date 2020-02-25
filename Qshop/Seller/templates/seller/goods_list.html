@@ -1,0 +1,74 @@
+{% extends "seller/base.html" %}
+{% block content%}
+    {% if status == "1" %}
+        <h1 class="h3 mb-4 text-gray-800">在售商品</h1>
+    {% else %}
+        <h1 class="h3 mb-4 text-gray-800">下架商品</h1>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>商品编号</th>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>商品数量</th>
+                <th>商品产地</th>
+                <th>商品保质期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for one in goods_list %}
+            <tr>
+                <td>{{ one.goods_number }}</td>
+                <td>{{ one.goods_name }}</td>
+                <td>{{ one.goods_price }}</td>
+                <td>{{ one.goods_count }}</td>
+                <td>{{ one.goods_location }}</td>
+                <td>{{ one.goods_safe_date }}</td>
+                <td>
+                    <button class="btn btn-primary">修改</button>
+{#                    <button class="btn btn-warning">下架</button>#}
+                    {% if one.goods_status == 1 %}
+                        <a href="/seller/goods_status/{{ one.id }}/down/" class="btn btn-warning">下架</a>
+                    {% else %}
+                        <a href="/seller/goods_status/{{ one.id }}/up/" class="btn btn-facebook">上架</a>
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    <ul class="pagination" style="float: right;margin-right: 80px">
+    {% for page in goods_obj.page_range %}
+        {% if status == "1" %}
+            {% if goods_list.number == page %}
+                <li class="paginate_button page-item active">
+                    <a href="/seller/goods_list/{{ page }}/1/" class="page-link">{{ page }}</a>
+                </li>
+            {% else %}
+            <li class="paginate_button page-item ">
+                    <a href="/seller/goods_list/{{ page }}/1/" class="page-link">{{ page }}</a>
+                </li>
+            {% endif %}
+        {% else %}
+            {% if goods_list.number == page %}
+                <li class="paginate_button page-item active">
+                    <a href="/seller/goods_list/{{ page }}/0/" class="page-link">{{ page }}</a>
+                </li>
+            {% else %}
+            <li class="paginate_button page-item ">
+                    <a href="/seller/goods_list/{{ page }}/0/" class="page-link">{{ page }}</a>
+                </li>
+            {% endif %}
+        {% endif %}
+
+    {% endfor %}
+
+    </ul>
+
+{% endblock %}
