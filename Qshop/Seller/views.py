@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from .models import LoginUser,Goods
+from .models import LoginUser, Goods,GoodsType
 import hashlib
-from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.paginator import Paginator
+
 
 # Create your views here.
 ## 密码加密
@@ -12,21 +13,26 @@ def setPassword(password):
     result = md5.hexdigest()
 
     return result
+
+
 ## 登录装饰器
 def loginValid(func):
-    def inner(request,*args,**kwargs):
+    def inner(request, *args, **kwargs):
         ##校验登录
         cookie_email = request.COOKIES.get("email")
         session_email = request.session.get("email")
         if cookie_email and session_email and cookie_email == session_email:
             flag = LoginUser.objects.filter(email=cookie_email, id=request.COOKIES.get("userid"), user_type=0).exists()
             if flag:
-                return func(request,*args,**kwargs)
+                return func(request, *args, **kwargs)
             else:
                 return HttpResponseRedirect("/seller/login/")
         else:
             return HttpResponseRedirect("/seller/login/")
+
     return inner
+
+
 ## 注册
 def register(request):
     ## 接收参数
@@ -37,25 +43,27 @@ def register(request):
         ## 校验数据
         if email and password and password == repassword:
             ## 有数据
-            LoginUser.objects.create(email=email,password=setPassword(password),user_type=0)
+            LoginUser.objects.create(email=email, password=setPassword(password), user_type=0)
             return HttpResponseRedirect("/seller/login/")
         else:
             ## 参数为空
             message = "参数为空"
 
-    return render(request,"seller/register.html",locals())
+    return render(request, "seller/register.html", locals())
+
+
 ## 登录
 def login(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
         if email and password:
-            user = LoginUser.objects.filter(email=email,password=setPassword(password),user_type=0).first()
+            user = LoginUser.objects.filter(email=email, password=setPassword(password), user_type=0).first()
             if user:
                 ## 成功登录
                 response = HttpResponseRedirect("/seller/index/")
-                response.set_cookie("email",user.email)
-                response.set_cookie("userid",user.id)
+                response.set_cookie("email", user.email)
+                response.set_cookie("userid", user.id)
                 request.session["email"] = user.email
                 return response
             else:
@@ -63,11 +71,15 @@ def login(request):
         else:
             message = "参数为空"
 
-    return render(request,"seller/login.html",locals())
+    return render(request, "seller/login.html", locals())
+
+
 ## 首页
 @loginValid
 def index(request):
-    return render(request,"seller/index.html")
+    return render(request, "seller/index.html")
+
+
 ##   退出
 def logout(request):
     ## 删除 cookie session
@@ -75,23 +87,28 @@ def logout(request):
     response.delete_cookie("email")
     del request.session["email"]
     return response
+
+
 ## 商品列表页面
 @loginValid
-def goods_list(request,status,page=1):
+def goods_list(request, status, page=1):
     ## 根据状态  查询商品
     ## status 状态的标识
     #  0  获取下架商品的数据
     # 1  获取在售商品的数据
 
     # goods = Goods.objects.all()
-    goods = Goods.objects.filter(goods_status=status).order_by("id")
-    goods_obj = Paginator(goods,8)
+    # goods = Goods.objects.filter(goods_status=status).order_by("id")
+    goods = Goods.objects.filter(goods_status=status,goods_store_id=request.COOKIES.get("userid")).order_by("id")
+    goods_obj = Paginator(goods, 8)
     goods_list = goods_obj.page(page)
 
     # return render(request,"goods_list.html",locals())
-    return render(request,"seller/goods_list.html")
+    return render(request, "seller/goods_list.html",locals())
+
+
 ## 修改商品的状态
-def goods_status(request,id,status):
+def goods_status(request, id, status):
     """
     修改商品的状态
     :param request:
@@ -101,19 +118,20 @@ def goods_status(request,id,status):
             down   下架
     :return:
     """
-    goods = Goods.objects.get(id = id)
+    goods = Goods.objects.get(id=id)
     if status == "up":
         ## 商品要上架
-        goods.goods_status= 1
+        goods.goods_status = 1
         goods.save()
     else:
         ## 代表商品要下架
         goods.goods_status = 0
         goods.save()
-    url = request.META.get("HTTP_REFERER")   ## 得到请求的地址
+    url = request.META.get("HTTP_REFERER")  ## 得到请求的地址
     print(url)
     # return HttpResponseRedirect("/loginuser/goods_list/1/1/")
     return HttpResponseRedirect(url)
+
 
 ## 个人中心
 @loginValid
@@ -134,5 +152,28 @@ def user_profile(request):
         if request.FILES.get("img"):
             user.photo = request.FILES.get("img")
         user.save()
-    return render(request,"seller/user_profile.html",locals())
+    return render(request, "seller/user_profile.html", locals())
+
+##录入商品
+@loginValid
+def goods_add(request):
+    goods_type = GoodsType.objects.all()
+    if request.method == "POST":
+        user_id = request.COOKIES.get("userid")
+        data = request.POST
+        goods = Goods()
+        goods.goods_number = data.get("goods_number")
+        goods.goods_name = data.get("goods_name")
+        goods.goods_price = data.get("goods_price")
+        goods.goods_count = data.get("goods_count")
+        goods.goods_location = data.get("goods_location")
+        goods.goods_safe_date = data.get("goods_safe_date")
+        # goods.goods_picture = data.get("goods_number")
+        goods.goods_type_id = int(data.get("goods_type"))
+        goods.goods_store = LoginUser.objects.get(id=user_id)
+        goods.goods_picture = request.FILES.get("img")
+        goods.save()
+
+    return render(request,'seller/goods_add.html',locals())
+
 

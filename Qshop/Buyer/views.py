@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import hashlib
 from django.http import HttpResponseRedirect
-from Seller.models import LoginUser
+from Seller.models import LoginUser,GoodsType,Goods
 
 
 
@@ -32,7 +32,25 @@ def loginValid(func):
 ## 首页
 # @loginValid
 def index(request):
-    return render(request,"buyer/index.html")
+    """
+    1、如果类型下面没有商品，类型不展示
+    2、如果类型下面超过4个商品，应该展示4个
+    3、如果类型下面商品 大于0 小于 4  应该展示商品
+    """
+    goods_type = GoodsType.objects.all()
+    ## 处理返回的数据  构建数据
+    ## res = [{"type":"新鲜水果.obj","goods":[goods1,goods2,goods3,goods4]},{},{}]
+    res = []
+    for one in goods_type:
+        goods = one.goods_set.order_by("id").all()
+        if len(goods) > 4:
+            goods_list = goods[:4]
+            res.append({"type":one,"goods_list":goods_list})
+        elif len(goods) > 0 and len(goods) <= 4:
+            goods_list = goods
+            res.append({"type": one, "goods_list": goods_list})
+
+    return render(request,"buyer/index.html",locals())
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -78,6 +96,39 @@ def logout(request):
     resp.delete_cookie("buy_userid")
     del request.session["buy_email"]
     return resp
+
+
+def base(request):
+    return render(request,"buyer/base.html")
+
+## 商品列表页面
+def goods_list(request):
+    kywards = request.GET.get("kywards")
+    req_type = request.GET.get("req_type")
+    ## 判断请求的方式
+    if req_type == "find_all":
+        ## 查看更多
+            ## kywards 应该为 类型的id
+        goods_type = GoodsType.objects.filter(id = kywards).first()
+        goods = goods_type.goods_set.order_by("-goods_pro_time")
+
+    else:
+        ## 搜索
+            ## kywards 应该为 商品的名字
+            ## 模糊查询
+        goods = Goods.objects.filter(goods_name__contains= kywards).order_by("-goods_pro_time")
+    goods_new = goods[:2]
+    return render(request,"buyer/goods_list.html",locals())
+
+
+
+
+## 商品详情页
+def goods_detail(request):
+    ##  通过商品的id 获取商品
+    goods_id = request.GET.get("goods_id")
+    goods = Goods.objects.get(id= goods_id)
+    return render(request,"buyer/goods_detail.html",locals())
 
 
 
