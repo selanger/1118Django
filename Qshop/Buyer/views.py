@@ -2,7 +2,7 @@ from django.shortcuts import render
 import hashlib
 from django.http import HttpResponseRedirect
 from Seller.models import LoginUser,GoodsType,Goods
-
+from .models import PayOrder,OrderInfo
 
 
 # Create your views here.
@@ -109,7 +109,7 @@ def goods_list(request):
     if req_type == "find_all":
         ## 查看更多
             ## kywards 应该为 类型的id
-        goods_type = GoodsType.objects.filter(id = kywards).first()
+        goods_type = GoodsType.objects.filter(id = int(kywards)).first()
         goods = goods_type.goods_set.order_by("-goods_pro_time")
 
     else:
@@ -127,8 +127,49 @@ def goods_list(request):
 def goods_detail(request):
     ##  通过商品的id 获取商品
     goods_id = request.GET.get("goods_id")
-    goods = Goods.objects.get(id= goods_id)
+    goods = Goods.objects.get(id= int(goods_id))
     return render(request,"buyer/goods_detail.html",locals())
+
+def get_order_no():
+    import uuid
+    order_no = str(uuid.uuid4())
+    return order_no
+## 订单页面
+@loginValid
+def place_order(request):
+    ## 保存数据
+    ## 获取 买家的user_id
+    user_id = request.COOKIES.get("buy_userid")
+    goods_id = request.GET.get("goods_id")
+    goods_count = int(request.GET.get("goods_count"))
+    ## 查找商品
+    goods = Goods.objects.get(id=goods_id)
+    ##payorder
+    payorder = PayOrder()
+    payorder.order_number = get_order_no()
+    payorder.order_status = 1   ### 未支付状态
+    payorder.order_total = goods_count * goods.goods_price
+    payorder.order_user_id = int(user_id)
+    payorder.save()
+
+
+    order_info = OrderInfo()
+    order_info.order = payorder
+    order_info.goods = goods
+    order_info.goods_price = goods.goods_price
+    ## 店铺的信息 通过商品寻找 店铺
+    order_info.store = goods.goods_store
+    order_info.goods_count = goods_count
+    order_info.goods_total_price = goods_count * goods.goods_price
+    order_info.save()
+
+    ## orderinfo
+    return render(request,"buyer/place_order.html",locals())
+
+
+
+
+
 
 
 

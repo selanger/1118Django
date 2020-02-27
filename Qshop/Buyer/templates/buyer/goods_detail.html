@@ -15,7 +15,7 @@
 				</ul>
 			</div>
 			<ul class="navlist fl">
-				<li><a href="">首页</a></li>
+				<li><a href="/">首页</a></li>
 				<li class="interval">|</li>
 				<li><a href="">手机生鲜</a></li>
 				<li class="interval">|</li>
@@ -52,7 +52,7 @@
 			</div>
 			<div class="total">总价：<em><span id="total_mount">{{ goods.goods_price }}</span>元</em></div>
 			<div class="operate_btn">
-				<a href="javascript:;" class="buy_btn">立即购买</a>
+				<a href="javascript:;" class="buy_btn" id="buy_now">立即购买</a>
 				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
 			</div>
 		</div>
@@ -118,9 +118,32 @@
 
         $("#reduce").click(
             function () {
-                console.log(111111)
+                // console.log(111111)
+
+                var number = parseInt($("#num").val());
+                var price = parseFloat($("#price").text());
+                number = number - 1;
+                if (number <= 1){
+                	number =1;
+                }
+                total_mount = (number * price).toFixed(2);
+                $("#num").val(number);
+                $("#total_mount").text(total_mount);
+
             }
         )
+
+
+    $("#buy_now").click(
+        function () {
+            // console.log(1121111)
+            var goods_id = {{ goods.id }};
+            var goods_count = parseInt($("#num").val());
+            var url = '/buyer/place_order/?goods_id=' + goods_id + "&goods_count=" + goods_count;
+            window.location.href = url;
+        }
+    )
+
 
 
     </script>

@@ -143,11 +143,12 @@ def user_profile(request):
     ## 处理post请求
     if request.method == "POST":
         data = request.POST
+        print(data)
         user.email = data.get("email")
         user.phone_number = data.get("phone_number")
         user.username = data.get("username")
         user.age = data.get("age")
-        user.gender = data.get("gender")
+        user.gender = int(data.get("gender"))
         user.address = data.get("address")
         if request.FILES.get("img"):
             user.photo = request.FILES.get("img")
