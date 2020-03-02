@@ -29,3 +29,14 @@ class OrderInfo(models.Model):
     goods_total_price = models.FloatField(verbose_name="购买的单品的总金额")
     class Meta:
         db_table = "order_info"
+
+
+class Cart(models.Model):
+    goods = models.ForeignKey(to=Goods,on_delete=models.CASCADE)
+    goods_number = models.IntegerField(verbose_name="商品的数量")
+    goods_total = models.FloatField(verbose_name="商品的小计")
+    # goods_price = models.FloatField()
+    cart_user = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE,verbose_name="买家")
+    class Meta:
+        db_table = "cart"
+

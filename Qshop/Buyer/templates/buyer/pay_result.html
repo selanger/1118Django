@@ -1,0 +1,10 @@
+{% extends "buyer/base.html" %}
+
+{% block content %}
+{#    {{ request.GET }}#}
+    {% for key,value in request.GET.items %}
+        <p>
+            {{ key }}:{{ value }}
+        </p>
+    {% endfor %}
+{% endblock %}

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 import hashlib
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 from Seller.models import LoginUser,GoodsType,Goods
-from .models import PayOrder,OrderInfo
+from .models import PayOrder,OrderInfo,Cart
 
 
 # Create your views here.
@@ -132,7 +132,7 @@ def goods_detail(request):
 
 def get_order_no():
     import uuid
-    order_no = str(uuid.uuid4())
+    order_no = str(uuid.uuid4()).replace("-","")
     return order_no
 ## 订单页面
 @loginValid
@@ -165,6 +165,100 @@ def place_order(request):
 
     ## orderinfo
     return render(request,"buyer/place_order.html",locals())
+
+
+## 聚合函数
+from django.db.models import Sum,Count,F,Q
+def goods_test(request):
+    order_id = 21
+    pay_order = PayOrder.objects.get(id = order_id)
+    ## 聚合方法   aggregate
+    ## 返回值： 字典
+    ## key 是默认的 goods_count__聚合方法
+    ## 可以修改key
+    sum_goods = pay_order.orderinfo_set.aggregate(Sum("goods_count"),
+                                                  mycount = Count("id") )
+    return render(request,"buyer/goods_test.html",locals())
+
+from Qshop.settings import alipay
+## 支付宝支付
+def alipay_order(request):
+    ## 获取订单  payorder _id
+    payorder_id = request.GET.get("payorder_id")
+    payorder = PayOrder.objects.get(id=payorder_id)
+    # 3、 实例化一个订单
+    order_string = alipay.api_alipay_trade_page_pay(
+        subject="生鲜交易",  ## 主题
+        out_trade_no= payorder.order_number,  ## 订单号
+        total_amount= str(payorder.order_total),  ## 交易金额   字符串
+        return_url="http://127.0.0.1:8000/buyer/pay_result/",  ##  回调的地址
+        notify_url=None  ## 通知
+    )
+
+    # 4、 返回支付宝支付的url
+    result = "https://openapi.alipaydev.com/gateway.do?" + order_string
+    return HttpResponseRedirect(result)
+
+## 接收支付宝的支付结果
+def pay_result(request):
+    out_trade_no = request.GET.get("out_trade_no")
+    ## 修改订单的状态  未付款 -》 已付款
+    payorder = PayOrder.objects.get(order_number=out_trade_no)
+    payorder.order_status = 2
+    payorder.save()
+
+    return render(request,"buyer/pay_result.html",locals())
+
+from django.db.models import Sum
+## 购物车
+@loginValid
+def cart(request):
+    ## 查看 登录用户的购物车内容
+    user_id = request.COOKIES.get("buy_userid")
+    cart = Cart.objects.filter(cart_user=LoginUser.objects.get(id=int(user_id))).all()
+
+    ## 获取购物车中所有商品的 小计之和 以及 商品的数量之和
+    ## 聚合  all_total 字典  key：vlaue  ->  {"sum_total":3232,"sum_number":3232}
+    all_total = cart.aggregate(sum_total = Sum("goods_total"),sum_number = Sum("goods_number"))
+
+    return render(request,"buyer/cart.html",locals())
+
+## 添加购物车
+@loginValid
+def add_cart(request):
+    result = {"code":10000,"msg":"添加购物车成功"}
+    data = request.POST
+    ## 从cookie中获取买家
+    user_id = request.COOKIES.get("buy_userid")
+    print(data)
+    goods_id = data.get("goods_id")
+    goods_count = int(data.get("goods_count",1))  ## 商品详情页
+    goods = Goods.objects.get(id = goods_id)
+
+    ## 判断购物车中是否已经存在该商品
+    cart = Cart.objects.filter(goods = goods).first()
+    if cart:
+        ## 存在
+        cart.goods_number += goods_count
+        # cart.goods_total = goods.goods_price * (goods_count + cart.goods_number)
+        cart.goods_total += goods.goods_price * goods_count
+    else:
+        ## 不存在
+        cart = Cart()
+        cart.goods = goods
+        cart.goods_number = goods_count
+        cart.goods_total = goods_count * goods.goods_price
+        cart.cart_user_id = user_id
+    try:
+        cart.save()
+        result = {"code":10000,"msg":"添加购物车成功"}
+    except:
+        result = {"code": 10001, "msg": "添加购物车失败"}
+    return JsonResponse(result)
+
+
+
+
 
 
 

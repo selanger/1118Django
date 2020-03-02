@@ -71,3 +71,18 @@
 
 {% endblock %}
 
+{% block script %}
+    <script>
+        $("#order_btn").click(
+            function () {
+                // console.log(111111)
+                var payorder_id = {{ payorder.id }};
+                var url = "/buyer/alipay_order/?payorder_id=" + payorder_id;
+                window.location.href = url;
+            }
+        )
+    </script>
+{% endblock %}
+
+
+
