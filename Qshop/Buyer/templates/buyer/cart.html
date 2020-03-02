@@ -31,7 +31,7 @@
 	<ul class="settlements">
 		<li class="col01"><input type="checkbox" name="" checked="" id="check_box"></li>
 		<li class="col02">全选</li>
-		<li class="col03">合计(不含运费)：<span>¥</span><em>{{ all_total.sum_total }}</em><br>共计<b>{{ all_total.sum_number }}</b>件商品</li>
+		<li class="col03">合计(不含运费)：<span>¥</span><em id="total_money">{{ all_total.sum_total }}</em><br>共计<b id="total_num">{{ all_total.sum_number }}</b>件商品</li>
 		<li class="col04"><a href="place_order.html">去结算</a></li>
 	</ul>
 
@@ -56,6 +56,7 @@
                     $(".goods_box").prop("checked",false);
                     // console.log(this.checked)
                 }
+                add();
 
             }
         )
@@ -64,10 +65,10 @@
                     //   单选
                 //  获取所有项 的input的数量
                 var len1 = $(".goods_box").length;
-                console.log(len1);
+                // console.log(len1);
                 //  获取所有项 中有checked 属性的数量
                 var len2 = $(".goods_box:checked").length;
-                console.log(len2);
+                // console.log(len2);
                 //  对比两值
                 if (len1 == len2){
                     // 相等    全选框增加 checked 属性
@@ -77,13 +78,35 @@
                     //         全选款去掉checked 属性
                     $("#check_box").prop("checked",false);
                 }
+                add()
             }
         )
 
-
-
-
-
+    function add() {
+        // 方法实现  单选  全选之后  计算 总数量以及总的价格，并将结果进行设置
+        // 获取到每一个没选中的 商品的 价格 以及数量
+        //  进行计算   总的 价格 和数量
+        //  进行设置
+        // each  循环遍历
+        var mydict = {"num":0,"total_money":0}
+        $(".goods_box").each(
+            function () {
+                // 判断 有checked 属性的 标签
+                if(this.checked){
+                    //   寻找被选中的数量以及价格
+                    // console.log(111111)
+                    var number = parseInt($(this).parents(".cart_list_td").find(".num_show").val());
+                    var money = parseFloat($(this).parents(".cart_list_td").find(".col07").text());
+                    mydict.num += number;
+                    mydict.total_money += money;
+                }
+            }
+        )
+        // console.log(mydict);
+        //  设置值
+        $("#total_money").text(mydict.total_money);
+        $("#total_num").text(mydict.num);
+    }
 
     </script>
 {% endblock %}
