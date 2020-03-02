@@ -11,7 +11,7 @@
 	</ul>
     {% for one in cart %}
 	<ul class="cart_list_td clearfix">
-		<li class="col01"><input type="checkbox" name="" checked></li>
+		<li class="col01"><input type="checkbox" name="" checked class="goods_box"></li>
 		<li class="col02"><img src="/static/{{ one.goods.goods_picture }}"></li>
 		<li class="col03">{{ one.goods.goods_name }}<br><em>{{ one.goods.goods_price }}元/500g</em></li>
 		<li class="col04">500g</li>
@@ -47,21 +47,44 @@
                 if (this.checked){
                     //  true  有checked 属性
                     //  将每一项 设置都有 checked 属性
-                    console.log(this.checked)
+                    //  prop 可以为选中的标签设置属性
+                    $(".goods_box").prop("checked",true);
+                    // console.log(this.checked)
                 } else{
                     // false 没有checked 属性
                      //  将每一项设置都没有 checked 属性
-                    console.log(this.checked)
+                    $(".goods_box").prop("checked",false);
+                    // console.log(this.checked)
                 }
-
-
-
-
-
-
 
             }
         )
+        $(".goods_box").click(
+            function () {
+                    //   单选
+                //  获取所有项 的input的数量
+                var len1 = $(".goods_box").length;
+                console.log(len1);
+                //  获取所有项 中有checked 属性的数量
+                var len2 = $(".goods_box:checked").length;
+                console.log(len2);
+                //  对比两值
+                if (len1 == len2){
+                    // 相等    全选框增加 checked 属性
+                    $("#check_box").prop("checked",true);
+
+                }else{
+                    //         全选款去掉checked 属性
+                    $("#check_box").prop("checked",false);
+                }
+            }
+        )
+
+
+
+
+
+
     </script>
 {% endblock %}
 
