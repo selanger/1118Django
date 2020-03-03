@@ -13,4 +13,6 @@ urlpatterns = [
     path("pay_result/",pay_result),
     path("cart/",cart),
     path("add_cart/",add_cart),
+    path("change_cart/",change_cart),
+    path("cart_place_order/",cart_place_order),
 ]

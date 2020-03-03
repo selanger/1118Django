@@ -9,31 +9,36 @@
 		<li class="col05">小计</li>
 		<li class="col06">操作</li>
 	</ul>
+    <form action="/buyer/cart_place_order/" method="post">
+    {% csrf_token %}
     {% for one in cart %}
 	<ul class="cart_list_td clearfix">
-		<li class="col01"><input type="checkbox" name="" checked class="goods_box"></li>
+		<li class="col01"><input type="checkbox" name="cart_id_{{ one.id }}" value="{{ one.id }}" checked class="goods_box"></li>
 		<li class="col02"><img src="/static/{{ one.goods.goods_picture }}"></li>
 		<li class="col03">{{ one.goods.goods_name }}<br><em>{{ one.goods.goods_price }}元/500g</em></li>
 		<li class="col04">500g</li>
 		<li class="col05">{{ one.goods.goods_price }}元</li>
 		<li class="col06">
 			<div class="num_add">
-				<a href="javascript:;" class="add fl">+</a>
-				<input type="text" class="num_show fl" value="{{ one.goods_number }}">
-				<a href="javascript:;" class="minus fl">-</a>
+				<a href="javascript:;" class="add fl" onclick="jisuan({{ one.id }},'add')">+</a>
+				<input type="text" class="num_show fl" id="goods_num_{{ one.id }}" value="{{ one.goods_number }}">
+				<a href="javascript:;" class="minus fl" onclick="jisuan({{ one.id }},'reduce')">-</a>
 			</div>
 		</li>
-		<li class="col07">{{ one.goods_total }}元</li>
+		<li class="col07" id="goods_total_{{ one.id }}">{{ one.goods_total }}元</li>
 		<li class="col08"><a href="javascript:;">删除</a></li>
 	</ul>
     {% endfor %}
-
 	<ul class="settlements">
 		<li class="col01"><input type="checkbox" name="" checked="" id="check_box"></li>
 		<li class="col02">全选</li>
 		<li class="col03">合计(不含运费)：<span>¥</span><em id="total_money">{{ all_total.sum_total }}</em><br>共计<b id="total_num">{{ all_total.sum_number }}</b>件商品</li>
-		<li class="col04"><a href="place_order.html">去结算</a></li>
+		<li class="col04">
+            <input type="submit" style="width: 150px;height: 50px;background-color: red;" value="去结算">
+        </li>
+
 	</ul>
+      </form>
 
 {% endblock %}
 
@@ -107,6 +112,46 @@
         $("#total_money").text(mydict.total_money);
         $("#total_num").text(mydict.num);
     }
+
+    function jisuan(cart_id,js_type) {
+
+        //  ajax  将请求 发送到后端进行处理
+        var url = "/buyer/change_cart/";
+        var cart_id = cart_id;
+        var js_type = js_type;
+
+        send_data = {
+            "csrfmiddlewaretoken":"{{ csrf_token }}",
+            "cart_id":cart_id,
+            "js_type":js_type,
+        };
+        $.ajax({
+            url:url,
+            type:"post",
+            data:send_data,
+            success:function (data) {
+                console.log(data);
+                if (data.code == 10000){
+                    console.log(data.data["goods_number"]);
+                    console.log(data.data["goods_total"]);
+                    // 将数量进行设置
+                    document.getElementById("goods_num_" + cart_id).value = data.data["goods_number"];
+                    // 将小计进行设置
+                    document.getElementById("goods_total_" + cart_id).innerHTML = data.data["goods_total"];
+                    add();
+                }else{
+                    alert(data.msg )
+                }
+            },
+            error:function (data) {
+                console.log(data)
+            }
+        })
+
+    }
+
+
+
 
     </script>
 {% endblock %}
