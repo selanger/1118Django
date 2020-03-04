@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import LoginUser, Goods,GoodsType
+from .models import LoginUser, Goods,GoodsType,ValidCode
 import hashlib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.paginator import Paginator
@@ -176,5 +176,30 @@ def goods_add(request):
         goods.save()
 
     return render(request,'seller/goods_add.html',locals())
+
+from sdk.sendDD import senddingding
+import random
+def get_code(request):
+    result = {"code":10000,"msg":"验证码已发送"}
+    ## 发送验证码
+    ## 保存到数据库中
+    email =request.GET.get("email")
+    code = random.randint(1000,9999)
+    params = {
+        "content": "您的验证码为：{}，打死不要告诉别人！！！".format(code),
+        "atMobiles": [],
+        "isAtAll": True
+    }
+    try:
+        ## 发送  使用钉钉
+        senddingding(params)
+        # 保存
+        ValidCode.objects.create(email=email,code=code)
+        result = {"code": 10000, "msg": "验证码已发送"}
+    except:
+        result = {"code": 10001, "msg": "验证码发送失败"}
+
+
+    return JsonResponse(result)
 
 

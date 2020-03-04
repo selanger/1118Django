@@ -3,6 +3,7 @@
 import smtplib
 from email.mime.text import MIMEText
 
+
 subject = "天天生鲜"
 content = "好好学习"
 sender = "str_wjp@163.com"
@@ -20,6 +21,9 @@ message = MIMEText(content,'plain','utf-8')
 message["Subject"] = subject  ## 主题
 message["From"] = sender  ## 发件人
 message["To"] = recver     ### 收件人
+
+
+
 
 ## 3、登录邮件服务器并发送邮件
 smtp = smtplib.SMTP_SSL("smtp.163.com",465)
