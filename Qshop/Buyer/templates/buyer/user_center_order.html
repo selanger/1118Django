@@ -1,0 +1,66 @@
+{% extends "buyer/base.html" %}
+{% block content %}
+	<div class="main_con clearfix">
+		<div class="left_menu_con clearfix">
+			<h3>用户中心</h3>
+			<ul>
+				<li><a href="user_center_info.html">· 个人信息</a></li>
+				<li><a href="user_center_order.html" class="active">· 全部订单</a></li>
+				<li><a href="user_center_site.html">· 收货地址</a></li>
+			</ul>
+		</div>
+		<div class="right_content clearfix">
+				<h3 class="common_title2">全部订单</h3>
+                {% for payorderone in payorder_all %}
+				<ul class="order_list_th w978 clearfix">
+					<li class="col01">{{ payorderone.order_date | date:"Y-m-d" }}</li>
+                    <li class="col02 stress">{{ payorderone.get_order_status_display }}</li>
+					<li class="col02" style="width: 300px;">订单号：{{ payorderone.order_number }}</li>
+
+				</ul>
+
+				<table class="order_list_table w980">
+					<tbody>
+						<tr>
+							<td width="55%">
+                                {% for orderinfoone in payorderone.orderinfo_set.all %}
+								<ul class="order_goods_list clearfix">
+									<li class="col01"><img src="/static/{{ orderinfoone.goods.goods_picture }}"></li>
+									<li class="col02">{{ orderinfoone.goods.goods_name }}<em>{{ orderinfoone.goods.goods_price }}元/500g</em></li>
+									<li class="col03">{{ orderinfoone.goods_count }}</li>
+									<li class="col04">{{ orderinfoone.goods_total_price }}元</li>
+								</ul>
+                                    {% endfor %}
+
+							</td>
+							<td width="15%">{{ payorderone.order_total }}元</td>
+							<td width="15%">{{ payorderone.get_order_status_display }}</td>
+							<td width="15%">
+                                {% if payorderone.order_status == 1 %}
+                                    <a href="#" class="oper_btn">去付款</a>
+                                {% else %}
+                                    <a href="#" class="oper_btn">查看物流</a>
+                                {% endif %}
+                            </td>
+						</tr>
+					</tbody>
+				</table>
+            {% endfor %}
+
+
+
+
+
+
+				<div class="pagenation">
+					<a href="#">上一页</a>
+					<a href="#" class="active">1</a>
+					<a href="#">2</a>
+					<a href="#">3</a>
+					<a href="#">4</a>
+					<a href="#">5</a>
+					<a href="#">下一页></a>
+				</div>
+		</div>
+	</div>
+{% endblock %}

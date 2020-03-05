@@ -336,6 +336,15 @@ def cart_place_order(request):
 
     return render(request,"buyer/place_order.html",locals())
 
+## 我的订单
+@loginValid
+def user_center_order(request):
+    ## 个人订单
+    buy_userid = request.COOKIES.get("buy_userid")
+    user = LoginUser.objects.filter(id = buy_userid).first()
+    payorder_all = PayOrder.objects.filter(order_user =user).all()
+    return render(request,"buyer/user_center_order.html",locals())
+
 
 
 

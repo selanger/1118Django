@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Manager
 
 # Create your models here.
 
@@ -6,6 +7,25 @@ GENDER_STATUS = (
     (0,"女"),
     (1,"男")
 )
+
+class MyUser(Manager):
+    ## 查询
+    def getusername(self,id):
+        ## 根据 用户id 查询用户邮箱
+        ##
+        user = LoginUser.objects.filter(id = id).first()
+        if user:
+            return user.email
+        else:
+            return user
+    def adduser(self,email,password):
+        user = LoginUser.objects.filter(email=email).first()
+        if user:
+            return user.email
+        else:
+            user = LoginUser.objects.create(email=email, password=password)
+            return user.email
+
 
 class LoginUser(models.Model):
     email = models.EmailField(verbose_name="邮箱")
@@ -15,10 +35,9 @@ class LoginUser(models.Model):
     age = models.IntegerField(verbose_name="年龄",null=True,blank=True)
     gender = models.IntegerField(choices=GENDER_STATUS,verbose_name="性别",default=1)
     address = models.TextField(verbose_name="地址",null=True,blank=True)
-    ##
     photo = models.ImageField(upload_to="img",default="img/gtl.jpg",verbose_name="图片")
     user_type = models.IntegerField(default=1,verbose_name="用户身份")   ## 0 代表卖家 1代表买家
-
+    objects = MyUser()
     class Meta:
         db_table = "loginuser"
 

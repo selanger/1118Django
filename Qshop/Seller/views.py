@@ -32,7 +32,7 @@ def loginValid(func):
 
     return inner
 
-
+import datetime
 ## 注册
 def register(request):
     ## 接收参数
@@ -40,11 +40,26 @@ def register(request):
         password = request.POST.get("password")
         repassword = request.POST.get("repassword")
         email = request.POST.get("email")
+        code = request.POST.get("code")
         ## 校验数据
-        if email and password and password == repassword:
+        if email and password and password == repassword and code:
             ## 有数据
-            LoginUser.objects.create(email=email, password=setPassword(password), user_type=0)
-            return HttpResponseRedirect("/seller/login/")
+            ## 校验验证码
+            validCode = ValidCode.objects.filter(code=code,email=email).order_by("-create_time").first()
+            if validCode:
+                ## 存在
+                ## 校验过期时间     2min 内有效
+                now_time = datetime.datetime.now()
+                create_time =validCode.create_time
+                t = (now_time - create_time).total_seconds()    ### 获取时间间隔    秒
+                validCode.delete()
+                if t < 120:
+                    LoginUser.objects.create(email=email, password=setPassword(password), user_type=0)
+                    return HttpResponseRedirect("/seller/login/")
+                else:
+                    message = "验证码失效"
+            else:
+                message = "验证码不存在"
         else:
             ## 参数为空
             message = "参数为空"
@@ -73,10 +88,16 @@ def login(request):
 
     return render(request, "seller/login.html", locals())
 
-
+from CeleryTask.tasks import Test,Myprint
 ## 首页
 @loginValid
 def index(request):
+    ## 发布任务
+    # import time
+    # time.sleep(20)
+    # print("hello world")
+    Test.delay()   ## 发布任务
+    Myprint.delay(10)    ## 发布有参数的任务
     return render(request, "seller/index.html")
 
 
@@ -192,7 +213,11 @@ def get_code(request):
     }
     try:
         ## 发送  使用钉钉
-        senddingding(params)
+        # senddingding(params)
+        # 发布一个异步任务
+        from CeleryTask.tasks import senddingd
+        senddingd.delay(params)
+
         # 保存
         ValidCode.objects.create(email=email,code=code)
         result = {"code": 10000, "msg": "验证码已发送"}
