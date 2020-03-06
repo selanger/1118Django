@@ -344,6 +344,38 @@ def user_center_order(request):
     user = LoginUser.objects.filter(id = buy_userid).first()
     payorder_all = PayOrder.objects.filter(order_user =user).all()
     return render(request,"buyer/user_center_order.html",locals())
+from django.core.cache import cache
+from django.http import HttpResponse
+def get_cachegoods(request):
+
+    goods_id = request.GET.get("id")
+    # goods = Goods.objects.filter(id = goods_id).first()
+    # goods_name = goods.goods_name
+    ## 从缓存中查询
+    goods_cache = cache.get(goods_id)
+    if goods_cache:
+        print("11111111")
+        goods_name = goods_cache
+    else:
+        print("2222222")
+        goods = Goods.objects.filter(id = goods_id).first()
+        goods_name = goods.goods_name
+        ## 设置缓存
+        cache.set(goods_id,goods_name,20)
+    return HttpResponse(goods_name)
+
+
+def update_cachegoods(request):
+    goods_id = request.GET.get("id")
+    goods_name = request.GET.get("goods_name")
+
+    ##  删除缓存
+    data = cache.get(goods_id)
+    if data:
+        cache.delete(goods_id)
+    ## 更新数据
+    Goods.objects.filter(id=goods_id).update(goods_name=goods_name)
+    return HttpResponse("update cache goods")
 
 
 

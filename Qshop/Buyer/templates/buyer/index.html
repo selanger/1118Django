@@ -1,4 +1,5 @@
 {% extends "buyer/base.html" %}
+    {% load cache %}
 {% block content %}
     	<div class="navbar_con">
 		<div class="navbar">
@@ -15,7 +16,9 @@
 
 	<div class="center_con clearfix">
 		<ul class="subnav fl">
+            {% cache 20 xxxxx %}
 			<li><a href="#model01" class="fruit">新鲜水果</a></li>
+            {% endcache %}
 			<li><a href="#model02" class="seafood">海鲜水产</a></li>
 			<li><a href="#model03" class="meet">猪牛羊肉</a></li>
 			<li><a href="#model04" class="egg">禽类蛋品</a></li>
@@ -38,6 +41,8 @@
 			<a href="#"><img src="/static/buyer/images/adv02.jpg"></a>
 		</div>
 	</div>
+    {% load cache%}
+    {% cache 300 goods_cache %}
     {% for one in res %}
 
 	<div class="list_model">
@@ -66,5 +71,6 @@
 		</div>
 	</div>
     {% endfor%}
+    {% endcache %}
 
 {% endblock %}

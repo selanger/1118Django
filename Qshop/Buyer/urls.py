@@ -16,4 +16,6 @@ urlpatterns = [
     path("change_cart/",change_cart),
     path("cart_place_order/",cart_place_order),
     path("user_center_order/",user_center_order),
+    path("get_cachegoods/",get_cachegoods),
+    path("update_cachegoods/",update_cachegoods),
 ]

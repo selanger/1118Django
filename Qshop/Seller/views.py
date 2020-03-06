@@ -3,6 +3,7 @@ from .models import LoginUser, Goods,GoodsType,ValidCode
 import hashlib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.paginator import Paginator
+from django.core.cache import cache
 
 
 # Create your views here.
@@ -69,6 +70,7 @@ def register(request):
 
 ## 登录
 def login(request):
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -87,17 +89,18 @@ def login(request):
             message = "参数为空"
 
     return render(request, "seller/login.html", locals())
-
+from django.views.decorators.cache import cache_page
 from CeleryTask.tasks import Test,Myprint
 ## 首页
+@cache_page(60*15)   ## 15 分钟
 @loginValid
 def index(request):
     ## 发布任务
     # import time
     # time.sleep(20)
-    # print("hello world")
-    Test.delay()   ## 发布任务
-    Myprint.delay(10)    ## 发布有参数的任务
+    print("hello world")
+    # Test.delay()   ## 发布任务
+    # Myprint.delay(10)    ## 发布有参数的任务
     return render(request, "seller/index.html")
 
 
@@ -227,4 +230,17 @@ def get_code(request):
 
     return JsonResponse(result)
 
+
+
+def middlewaretest(request,version):
+
+    print("view")
+    # return HttpResponse("middlewaretest1")
+    # return render(request,"seller/base.html")
+    def test01():
+        return HttpResponse("test01")
+    resp = HttpResponse("middlewaretest1")
+    resp.render = test01
+
+    return resp
 
