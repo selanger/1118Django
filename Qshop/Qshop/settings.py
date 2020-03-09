@@ -83,8 +83,24 @@ WSGI_APPLICATION = 'Qshop.wsgi.application'
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     },
+#     'slave':{
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'dbslave.sqlite3'),
+#     },
+#     'slave1': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'dbslave1.sqlite3'),
+#     },
+#     'master': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'dbslave1.sqlite3'),
 #     }
 # }
+
+
+
+# DATABASE_ROUTERS = ["Qshop.mydbrouter.Router"]
 
 DATABASES = {
     'default': {
@@ -198,4 +214,26 @@ CACHES = {
         ]
     }
 }
+
+## Django 日志配置
+LOGGING = {
+    'version':1,     ## 版本
+    'disable_exsiting_loggers':True,       ### 禁用已经存在的logging 模块
+    'handlers':{           ###    放置句柄的地方
+        'file':{
+            'level':"WARNING",       ### 代表要收集到  文件中的日志等级、
+            'class':'logging.FileHandler',
+            'filename':os.path.join(BASE_DIR,"django.log"),    ### 日志收集在  django.log 文件中
+            'encoding':"utf-8"      ## 编码
+        }
+    },
+    'loggers':{      ####  收集日志
+        'django':{      ###  收集日志的人员之一
+            'handlers':["file"],
+            'level':"DEBUG"        ### django 这个收集器收集的日志等级
+        }
+    }
+}
+
+
 

@@ -4,6 +4,9 @@ import hashlib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.paginator import Paginator
 from django.core.cache import cache
+import logging
+# 创建一个收集器
+collect = logging.getLogger("django")
 
 
 # Create your views here.
@@ -82,6 +85,10 @@ def login(request):
                 response.set_cookie("email", user.email)
                 response.set_cookie("userid", user.id)
                 request.session["email"] = user.email
+                ## 收集日志
+                ## xxxxx 成功登录
+                collect.critical("%s 成功登录" % user.email)
+
                 return response
             else:
                 message = "账号密码不正确"

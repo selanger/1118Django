@@ -1,0 +1,37 @@
+Watching for file changes with StatReloader
+C:\Users\Administrator\Desktop\project\Qshop\Seller\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /buyer/logout/ HTTP/1.1" 200 14984
+Not Found: /seller/loging
+"GET /seller/loging HTTP/1.1" 404 4144
+"GET /seller/login HTTP/1.1" 301 0
+"GET /seller/login/ HTTP/1.1" 200 2891
+C:\Users\Administrator\Desktop\project\Qshop\Seller\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /seller/login/ HTTP/1.1" 200 2891
+"POST /seller/login/ HTTP/1.1" 302 0
+"GET /seller/index/ HTTP/1.1" 200 27221
+"GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
+C:\Users\Administrator\Desktop\project\Qshop\Seller\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /seller/login/ HTTP/1.1" 200 2891
+admin@126.com 成功登录
+"POST /seller/login/ HTTP/1.1" 302 0
+"GET /seller/index/ HTTP/1.1" 200 27221
+"GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
+C:\Users\Administrator\Desktop\project\Qshop\Seller\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /seller/login/ HTTP/1.1" 200 2891
+"POST /seller/login/ HTTP/1.1" 302 0
+"GET /seller/index/ HTTP/1.1" 200 27221
+"GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
+C:\Users\Administrator\Desktop\project\Qshop\Seller\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /seller/login/ HTTP/1.1" 200 2891
+admin@126.com 成功登录
+"POST /seller/login/ HTTP/1.1" 302 0
+"GET /seller/index/ HTTP/1.1" 200 27221
+"GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
+C:\Users\Administrator\Desktop\project\Qshop\Qshop\settings.py changed, reloading.
+"GET /static/img/1.jpg HTTP/1.1" 404 1651
+"GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708

@@ -8,3 +8,4 @@ unsupported operand type(s) for +: 'int' and 'str'unsupported operand type(s) fo
 [2020-03-06 11:28:17]:unsupported operand type(s) for +: 'int' and 'str' 
 [2020-03-06 11:28:25]:unsupported operand type(s) for +: 'int' and 'str' 
 [2020-03-06 16:07:15]:'QuerySet' object has no attribute 'goods_name' 
+[2020-03-09 15:11:21]:'buy_email' 
