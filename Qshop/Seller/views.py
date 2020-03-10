@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import LoginUser, Goods,GoodsType,ValidCode
+from Buyer.models import OrderInfo,PayOrder,PayorderAddress,UserAddress
 import hashlib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.paginator import Paginator
@@ -98,17 +99,69 @@ def login(request):
     return render(request, "seller/login.html", locals())
 from django.views.decorators.cache import cache_page
 from CeleryTask.tasks import Test,Myprint
+from django.db.models import Sum,Count
+import datetime
 ## 首页
-@cache_page(60*15)   ## 15 分钟
+# @cache_page(60*15)   ## 15 分钟
 @loginValid
 def index(request):
-    ## 发布任务
-    # import time
-    # time.sleep(20)
-    print("hello world")
-    # Test.delay()   ## 发布任务
-    # Myprint.delay(10)    ## 发布有参数的任务
-    return render(request, "seller/index.html")
+
+    ## 用户
+    user_id = request.COOKIES.get("userid")
+    ## 获取当月
+    month = datetime.datetime.now().month
+    print(month)
+
+    ## 当月成交总金额
+    # 用户： 卖家
+    # 当月
+    # 订单详情表中的订单金额的和
+    # 状态：  2 3  4   6
+    month_sum_mount = OrderInfo.objects.filter(
+        store_id=user_id,
+        order__order_status__in= [2,3,4,6],
+        order__order_date__month=month
+    ).aggregate(Sum("goods_total_price")).get("goods_total_price__sum")
+
+    print(month_sum_mount)
+
+    # （二）当月成交订单笔数
+    month_count = PayOrder.objects.filter(
+        order_date__month= month,
+        order_status__in = [2,3,4,6],
+        orderinfo__store_id=user_id
+    ).count()
+    print(month_count)
+
+    ## （三）销量最高的商品的名字
+    # max_goods = OrderInfo.objects.filter(store_id=user_id).aggregate(Sum("goods_count"))
+    # print(max_goods)
+    ## annotate  分组   group by
+    ## annotate 前面的values  代表 分组的条件
+    ## 得到的结果 queryset   值:  key->分组字段  聚合字段    value
+    # data = OrderInfo.objects.values("goods").annotate(Sum("goods_count")).order_by("-goods_count__sum")
+    # print(data)
+    # max_goods = Goods.objects.get(id=data[0].get("goods")).goods_name
+    # print(max_goods)
+    ##  select ziduan from xxxx where xxxx=xxx group by ziduan   having tiaojian
+    data = OrderInfo.objects.filter(store_id=user_id,
+        order__order_status__in= [2,3,4,6],
+        order__order_date__month=month).values("goods").annotate(Sum("goods_count")).order_by("-goods_count__sum").values("goods")
+    print(data)
+    max_goods = Goods.objects.get(id=data[0].get("goods")).goods_name
+    print(max_goods)
+
+
+
+    #  （四）当月成交商品的总量
+    month_total = OrderInfo.objects.filter(
+        order__order_date__month=month,
+        order__order_status__in=[2, 3, 4, 6],
+        store_id=user_id
+    ).aggregate(Sum("goods_count")).get("goods_count__sum")
+    print(month_total)
+
+    return render(request, "seller/index.html",locals())
 
 
 ##   退出
@@ -250,4 +303,40 @@ def middlewaretest(request,version):
     resp.render = test01
 
     return resp
+
+
+@loginValid
+def order(request):
+    ### 获取卖家信息
+    user_id = request.COOKIES.get("userid")
+    status = int(request.GET.get("status"))
+    ## 获取卖家的订单详情     指定的状态
+    # order_info = OrderInfo.objects.filter(store_id=user_id).all()
+    # order_info_list = []
+    # for one in order_info:
+    #     if one.order.order_status == status:
+    #         order_info_list.append(one)
+
+    # print(order_info)     #### 该用户的所有订单详情
+    order_info = OrderInfo.objects.filter(store_id=user_id,order__order_status=status).all()
+
+    return render(request,"seller/order.html",locals())
+
+from sdk.send_email import send_email
+def txzf(request):
+    result = {"code":10000,"msg":"提醒成功"}
+    ## 获取到订单
+    payorder_id = request.GET.get("payorder_id")
+    ## 发送邮件
+    params = {
+        "subject":"天天生鲜提醒支付",
+        "content":"天天生鲜提醒您去支付",
+        "recver":"str_wjp@126.com"
+    }
+    send_email(params)
+
+
+
+    return JsonResponse(result)
+
 

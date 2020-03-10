@@ -4,9 +4,9 @@
 		<div class="left_menu_con clearfix">
 			<h3>用户中心</h3>
 			<ul>
-				<li><a href="user_center_info.html">· 个人信息</a></li>
-				<li><a href="user_center_order.html" class="active">· 全部订单</a></li>
-				<li><a href="user_center_site.html">· 收货地址</a></li>
+				<li><a href="/buyer/user_center_info/">· 个人信息</a></li>
+				<li><a href="/buyer/user_center_order/" class="active">· 全部订单</a></li>
+				<li><a href="/buyer/user_center_site/">· 收货地址</a></li>
 			</ul>
 		</div>
 		<div class="right_content clearfix">
@@ -37,7 +37,7 @@
 							<td width="15%">{{ payorderone.get_order_status_display }}</td>
 							<td width="15%">
                                 {% if payorderone.order_status == 1 %}
-                                    <a href="#" class="oper_btn">去付款</a>
+                                    <a href="/buyer/alipay_order/?payorder_id={{ payorderone.id }}" class="oper_btn">去付款</a>
                                 {% else %}
                                     <a href="#" class="oper_btn">查看物流</a>
                                 {% endif %}

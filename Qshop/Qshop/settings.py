@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'Qshop.middleware01.MiddleWareTest',
+    # 'Qshop.middleware01.MiddleWareTest',
     # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 

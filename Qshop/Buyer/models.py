@@ -40,3 +40,18 @@ class Cart(models.Model):
     class Meta:
         db_table = "cart"
 
+class UserAddress(models.Model):
+    name = models.CharField(max_length=32,verbose_name="收货人姓名")
+    phone = models.CharField(max_length=11,verbose_name="收货人手机号")
+    address = models.TextField(verbose_name="收货人手机号")
+    user = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE)
+    status = models.IntegerField(verbose_name="地址状态",default=0)  ### 1 为使用中  0为 未使用
+
+class PayorderAddress(models.Model):
+    name = models.CharField(max_length=32,verbose_name="收货人姓名")
+    phone = models.CharField(max_length=11,verbose_name="收货人手机号")
+    address = models.TextField(verbose_name="收货人手机号")
+    payorder = models.OneToOneField(to=PayOrder,on_delete=models.CASCADE)  ## 一对一
+
+
+

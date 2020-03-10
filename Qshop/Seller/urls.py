@@ -5,8 +5,8 @@ from django.views.decorators.cache import cache_page
 urlpatterns = [
     path("login/",login),
     path("register/",register),
-    # path("index/",index),
-    path("index/",cache_page(200)(index)),
+    path("index/",index),
+    # path("index/",cache_page(200)(index)),
     path("logout/",logout),
     path("user_profile/",user_profile),
     path("goods_add/",goods_add),
@@ -14,4 +14,6 @@ urlpatterns = [
     re_path("goods_list/(?P<page>\d+)/(?P<status>\d+)/", goods_list),
     re_path("goods_status/(?P<id>\d+)/(?P<status>\w+)/", goods_status),
     re_path("middlewaretest/(?P<version>\w+)/",middlewaretest),
+    path("order/",order),
+    path("txzf/",txzf),
 ]

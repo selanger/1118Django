@@ -18,4 +18,7 @@ urlpatterns = [
     path("user_center_order/",user_center_order),
     path("get_cachegoods/",get_cachegoods),
     path("update_cachegoods/",update_cachegoods),
+    path("user_center_info/",user_center_info),
+    path("user_center_site/",user_center_site),
+    path("update_useraddress/",update_useraddress),
 ]

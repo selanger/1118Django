@@ -2,7 +2,8 @@ from django.shortcuts import render
 import hashlib
 from django.http import HttpResponseRedirect,JsonResponse
 from Seller.models import LoginUser,GoodsType,Goods
-from .models import PayOrder,OrderInfo,Cart
+from .models import PayOrder,OrderInfo,Cart,UserAddress,PayorderAddress
+
 
 
 # Create your views here.
@@ -162,6 +163,7 @@ def place_order(request):
     order_info.goods_count = goods_count
     order_info.goods_total_price = goods_count * goods.goods_price
     order_info.save()
+    user_address = UserAddress.objects.filter(user_id=user_id,status=1).first()
 
     ## orderinfo
     return render(request,"buyer/place_order.html",locals())
@@ -182,10 +184,23 @@ def goods_test(request):
 
 from Qshop.settings import alipay
 ## 支付宝支付
+@loginValid
 def alipay_order(request):
     ## 获取订单  payorder _id
     payorder_id = request.GET.get("payorder_id")
     payorder = PayOrder.objects.get(id=payorder_id)
+    ## 保存订单和地址的关系
+    user_id = request.COOKIES.get("buy_userid")
+    user_address = UserAddress.objects.filter(user_id=user_id,status=1).first()     ### 获取用户当前的地址
+    ## 保存关系
+    PayorderAddress.objects.create(name=user_address.name,
+                                                      address= user_address.address,
+                                                      phone=user_address.phone,
+                                                      payorder=payorder)
+
+
+
+
     # 3、 实例化一个订单
     order_string = alipay.api_alipay_trade_page_pay(
         subject="生鲜交易",  ## 主题
@@ -377,11 +392,50 @@ def update_cachegoods(request):
     Goods.objects.filter(id=goods_id).update(goods_name=goods_name)
     return HttpResponse("update cache goods")
 
+## 个人中心
+@loginValid
+def user_center_info(request):
+    buy_userid = request.COOKIES.get("buy_userid")
+    user = LoginUser.objects.filter(id=buy_userid).first()
+    return  render(request,"buyer/user_center_info.html",locals())
 
 
+## 个人地址
+@loginValid
+def user_center_site(request):
+    ## get请求   获取当前的地址
+    buy_userid = request.COOKIES.get("buy_userid")
+    user = LoginUser.objects.filter(id=buy_userid).first()
+    # useraddress = UserAddress.objects.filter(user=user).first()
+
+    ## post请求   提交新的地址
+    if request.method == "POST":
+        print(request.POST)
+        data = request.POST
+        UserAddress.objects.create(name=data.get("name"),
+                                   address=data.get("address"),
+                                   phone=data.get("phone"),
+                                   user=user
+                                   )
+    useraddress = UserAddress.objects.filter(user=user).all()
+    return  render(request,"buyer/user_center_site.html",locals())
 
 
-
+## 修改默认地址的视图
+@loginValid
+def update_useraddress(request):
+    if request.method == "POST":
+        data = request.POST
+        address_id = request.POST.get("address")
+        buy_userid = request.COOKIES.get("buy_userid")
+        user = LoginUser.objects.filter(id=buy_userid).first()
+        print(data)
+        ## 修改用户地址的状态
+        ## 将之前的地址状态  改为 0
+        UserAddress.objects.filter(user=user).update(status=0)
+        ## address_id 地址修改为当前使用的地址  改为1
+        UserAddress.objects.filter(id=address_id).update(status=1)
+    return HttpResponseRedirect("/buyer/user_center_site/")
 
 
 
