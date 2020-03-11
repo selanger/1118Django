@@ -193,3 +193,8 @@ admin@126.com 成功登录
 "GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
 "GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
 "GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 2501
+"GET /static/img/1.jpg HTTP/1.1" 404 1651
+admin@126.com 成功登录
+"GET /static/img/undraw_posting_photo.svg HTTP/1.1" 404 1708

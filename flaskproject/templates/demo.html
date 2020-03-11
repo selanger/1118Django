@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+</head>
+<body>
+<h1>demo 页面 </h1>
+<p>姓名 ： {{ name }}</p>
+<p>过滤器：{{ name | upper }}</p>
+<p>拼接  {{ name + "laoda" }}</p>
+<p>大写{{ name.upper() }}</p>
+<p>替换 {{ name.replace("z","xxxxxxxxx") }}</p>
+<p>年龄 ： {{ age }}</p>
+<p>整形+{{ age + 10 }}</p>
+<p>自定义过滤器： 年龄 + 100 {{ age | Myadd }} </p>
+<p>自定义过滤器多个参数： {{ age | Myaddmany(10,10,10) }}</p>
+
+
+<h2>列表</h2>
+<p>学科 ： {{ subject }}</p>
+<p> {{ subject.0 }}   </p>
+<p> {{ subject[0] }}</p>
+<h2>字典</h2>
+<p>分数： {{ score }}</p>
+<p>  {{ score.shuxue }}</p>
+<p>  {{ score["shuxue"] }} </p>
+<p>  {{ score.get("yuwen") }}  </p>
+<p>类变量 ： {{ person.name }}</p>
+
+<h2>if判断</h2>
+{% if age > 18 %}
+    <h3>已经成年</h3>
+{% elif age < 18 %}
+    <h3>未成年</h3>
+{% else %}
+    <h3>在成年的路上</h3>
+{% endif %}
+
+<h2> for 列表</h2>
+{% for one in subject %}
+    {{ loop.index }}、{{ one }}
+{% endfor %}
+
+<h2>for loop</h2>
+{% for one in subject %}
+    {% if loop.first %}
+        {{ one }}
+    {% elif loop.last %}
+        {{ one }}
+    {% endif %}
+{% endfor %}
+
+
+<h2>循环字典</h2>
+{% for key,value in score.items() %}
+    <p>{{ key }}:{{ value }}</p>
+{% endfor %}
+
+
+{{ myhtml | safe }}
+
+</body>
+</html>
