@@ -7,7 +7,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 ## 数据库的配置
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:111111@localhost/flaskdemo"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-# app.config["SQLALCHEMY_ECHO"] = True
+app.config["SQLALCHEMY_ECHO"] = True
 
 ## 绑定app 和sqlalchemy
 db = SQLAlchemy(app)
