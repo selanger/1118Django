@@ -42,10 +42,21 @@ class Role(Model):
     ## User 关联模型的类名
     ## backref 反向映射
     user = db.relationship("User",backref="role")
+class Label(Model):
+    name = db.Column(db.String(32))      ### 标签名字
+    description = db.Column(db.Text)     ## 标签描述
+    course = db.relationship("Course",backref ="label")
 
 class Course(Model):
     name = db.Column(db.String(32))   ## 课程名字
     description = db.Column(db.String(32))  ## 课程描述
+    picture = db.Column(db.String(64))     ## 图片
+    show_number = db.Column(db.Integer)     ##  观看人数
+    status = db.Column(db.Integer,default=1)       ## 状态 1代表已上线  0 代表未上线
+    type = db.Column(db.Integer,default=1)       ## 类别  1代表 免费 2 代表限免 3代表vip
+    time_number = db.Column(db.Integer)       ## 课时
+    lebal_id = db.Column(db.Integer,db.ForeignKey("label.id"))
+
 
     def addcourse(self):
         ## 每个课上加  good
