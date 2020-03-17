@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax</title>
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+<body>
+
+<form action="">
+    <!-- 使用 ajax 完成注册功能
+        账号 input 失去焦点事件 判断账号是否注册  get 请求
+        button 点击事件，完成post请求  注册
+     -->
+    账号：<input id="checkname" type="text"><br>
+    密码：<input id="password" type="password"><br>
+    <input type="button" id="btn" value="注册">
+</form>
+<p id="content"></p>
+<script>
+    $("#checkname").blur(function () {
+        var name = $("#checkname").val();
+        var url = "/checkname/?checkname="+name;
+        $.ajax({
+            url:url,
+            data:"",
+            type:"get",
+            success:function (data) {
+                // console.log(data["msg"])
+                if (data["code"] !=10001){
+                    $("#content").text(data["msg"])
+                }else{
+                    $("#content").text("")
+                }
+            },
+            error:function (error) {
+                console.log(error)
+            }
+        })
+    })
+
+    $("#btn").click(function () {
+        var url = "/ajaxregister/";
+        var send_data = {
+          "name":$("#checkname").val(),
+          "password":$("#password").val(),
+        };
+        $.ajax({
+            url:url,
+            type:"post",
+            data:send_data,
+            success:function (data) {
+                console.log(data)
+                $("#content").text(data["msg"]);
+            },
+            error:function (error) {
+                console.log(error)
+            }
+        })
+    })
+
+
+</script>
+
+</body>
+</html>

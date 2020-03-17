@@ -11,5 +11,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 ## 绑定app 和sqlalchemy
 db = SQLAlchemy(app)
+STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
+app.config["STATICFILES_DIRS"] = os.path.join(BASE_DIR,'static')
+app.config["SECRET_KEY"] = "dhfsdjkaf"
 
 

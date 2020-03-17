@@ -3,12 +3,35 @@ from lou import app
 from flask import render_template
 from lou.models import *
 from flask import request    ###  请求上下文
+from flask import session   ### 请求上下文
+import os
+from flask import make_response
+from flask import redirect
+import functools
+
+def LoginValid(func):
+    @functools.wraps(func)     ### 保留原来的函数名
+    def inner(*args,**kwargs):
+        ## 校验是否登录
+        cookie_name = request.cookies.get("name")
+        session_name = session.get("name")
+        if cookie_name and session_name and cookie_name == session_name:
+            ## 登录
+                ## 返回函数执行结果
+            return func(*args,**kwargs)
+        ## 未登录
+        return redirect("/login/")
+            ## 重定向到登录
+        # return func(*args,**kwargs)
+    return inner
+
 
 @app.route("/index/")
 def index():
     return render_template("index.html")
 
 @app.route("/courses/")
+@LoginValid
 def courses():
     ## 获取 第几页  获取 每页多少条
     page = request.args.get("page",1)
@@ -57,6 +80,10 @@ def courses():
 
     return render_template("courses.html",**locals())
 
+@app.route("/about/")
+@LoginValid
+def about():
+    return "about 页面"
 
 @app.route("/fy/")
 def fy():
@@ -152,16 +179,192 @@ def reqtest():
     # print(request.path)
     # print(request.host)   ## ip + port
     # print(request.host_url)   ## 协议 + ip + port
-    print(request.files)
-    img = request.files.get("xiaomeimei")
+    # print(request.files)
+    # img = request.files.get("xiaomeimei")
     # print(img.filename)
-    print(img.filename)   ## 文件的名字 + 后缀
-    print(img.content_type)   ## 文件的类型
-    print(img.name)   ## 请求的 key
-    img.save(img.filename)
+    # print(img.filename)   ## 文件的名字 + 后缀
+    # print(img.content_type)   ## 文件的类型
+    # print(img.name)   ## 请求的 key
+    # img.save(img.filename)
 
 
 
     return "reqtest"
+
+
+@app.route("/register/",methods=["GET","POST"])
+def register():
+    ## 通过post请求 获取参数
+    ## 保存数据
+    if request.method == "POST":
+        name = request.form.get("name")
+        password = request.form.get("password")
+        email = request.form.get("email")
+        if name and password:
+            u = User(name=name,password=password,role_id=1)
+            u.save()
+            ## 注册成功重定向到 登录页面
+            return redirect('/login/')
+        else:
+            message = "参数为空"
+            return render_template("index.html",**locals())
+
+    return render_template("index.html")
+
+
+@app.route("/login/",methods=["GET","POST"])
+def login():
+    flag = True
+    ## 通过post请求获取数据  校验数据
+    if request.method == "POST":
+        print(request.form)
+        name = request.form.get("name")
+        password = request.form.get("password")
+        if name and password:
+            ## 校验数据
+            user = User.query.filter(User.name==name,User.password==password).first()
+            print(user)
+            if user:
+                ## 用户存在
+                ## 重定向到课程页面
+                # return redirect("/courses/")
+                response = redirect('/courses/')
+                response.set_cookie("name",name)
+                session["name"] = name
+                return response
+            else:
+                ## 用户不存在
+                flag = True   ## 继续登录
+                message = "用户名密码错误"
+                return render_template("index.html",**locals())
+        return  render_template("index.html",**locals())
+    ## 如果登录成功 重定向到 课程页面
+    return render_template("index.html",**locals())
+# from lou import STATICFILES_DIRS
+@app.route("/logout/")
+def logout():
+    # return redirect("/login/")
+    ## 删除 cookie 和 session
+    response = redirect("/login/")
+    response.delete_cookie("name")
+    del session["name"]
+    return response
+
+
+
+
+@app.route("/imgform/",methods=["GET","POST"])
+def imgform():
+    user = ""
+    if request.method == "POST":
+        file = request.files.get("imgname")
+        print(file)
+        filename = file.filename  ## 文件的名字
+        file_path = os.path.join("images",filename)  ### img/xxxx.jpg
+        STATICFILES_DIRS = app.config.get("STATICFILES_DIRS")
+        ### 构建图片上传的路径  /static/img/xxx.jpg
+        save_path = os.path.join(STATICFILES_DIRS,file_path)
+        ## 保存图片
+        file.save(save_path)
+        ## 构建图片保存在数据库中的路径
+        ## 保存到数据库中    /img/xxxx.jpg
+        user = User.query.get(2)
+        user.picture = file_path
+        user.update()
+
+    return render_template("imgform.html",**locals())
+
+@app.route("/setcookie/")
+def setcookie():
+    ## django中的设置cookie 是在响应对象中
+    # response = redirect("/index/")
+    # response = render_template("index.html")
+    # response = make_response(render_template("index.html"))
+    response = make_response("index")
+    ## set_cookie(key,value,max_age)
+    response.set_cookie("name","zhangs",max_age=1000)
+    return response
+
+@app.route("/getcookie/")
+def getcookie():
+    ## 1、 需要导入 request
+    ## 2、 获取cookie
+    data = request.cookies
+    print(data)
+    name = request.cookies.get("name")
+    print(name)
+    return "获取cookie"
+
+@app.route("/deletecookie/")
+def deletecookie():
+    ## 删除cookie
+    response = redirect("/index/")
+    response.delete_cookie("name")
+    return response
+
+@app.route("/setsession/")
+def setsession():
+    session["name"] = "张三"
+    # print(app.config.keys())   ##   SECRET_KEY
+    # print(app.config.get("SECRET_KEY"))
+    return "设置session"
+@app.route("/getsession/")
+def getsession():
+    data = session.get("name")
+    print(data)
+    return "获取session"
+@app.route("/deletesession/")
+def deletesession():
+    del session["name"]
+    return "删除session"
+
+
+@app.route("/ajaxdemo/",methods=["GET","POST"])
+def ajaxdemo():
+    return render_template("ajaxdemo.html")
+from flask import jsonify
+@app.route("/checkname/",methods=["GET","POST"])
+def checkname():
+    result = {"code":10000,"msg":""}
+    checkname = request.args.get("checkname")
+    if checkname:
+        ## 参数存在   校验用户
+        user = User.query.filter(User.name==checkname).first()
+        if user:
+            result = {"code": 10000, "msg": "账号已存在"}
+        else:
+            result = {"code": 10001, "msg": "账号可用"}
+    else:
+        ## 参数不存在
+        result = {"code": 10002, "msg": "账号不能为空"}
+    return result    ## 直接返回了字典  就可以返回json数据
+    # return jsonify(result)  ## flask 1.1 版本之前使用 jsonify 返回json数据
+    # return result,405
+
+
+@app.route("/ajaxregister/",methods=["GET","POST"])
+def ajaxregister():
+    result = {"code":10000,"msg":""}
+    if request.method == "POST":
+        name = request.form.get("name")
+        password = request.form.get("password")
+        if name and password:
+            user = User.query.filter(User.name == name).first()
+            if user:
+                result = {"code": 10003, "msg": "账号已经存在"}
+            else:
+                ## 保存数据
+                user = User(name=name,password=password,role_id=1)
+                try:
+                    user.save()
+                    result = {"code": 10000, "msg": "注册成功"}
+                except:
+                    result = {"code": 10004, "msg": "创建用户失败,联系客服人员"}
+        else:
+            result = {"code": 10002, "msg": "请求数据为空"}
+    else:
+        result = {"code": 10001, "msg": "请求方式不正确"}
+    return result
+
 
 

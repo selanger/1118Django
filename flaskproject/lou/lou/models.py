@@ -30,6 +30,7 @@ class User(Model):
     name = db.Column(db.String(32))    ### 用户名
     password = db.Column(db.String(32))  ## 密码
     role_id = db.Column(db.Integer,db.ForeignKey("role.id"))
+    picture = db.Column(db.String(64),default="1")    ### 图片
     # role_id = db.Column(db.Integer)
     # role = db.relationship("Role",backref="user")
     course = db.relationship("Course",secondary=user_course,backref="user")

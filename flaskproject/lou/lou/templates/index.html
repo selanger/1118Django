@@ -16,8 +16,23 @@
                     </div>
 
                     <div class="col-md-5">
+                        {% if flag %}
+                        <form action="/login/" method="post">
+                            <div class="form-group">
+                                <input class="form-control" name="name" id="name" type="text" placeholder="昵称">
+                                <div class="help-block text-left"></div>
+                            </div>
 
-                        <form action="/quickregister" method="post">
+                            <div class="form-group">
+                                <input class="form-control" name="password" id="password" type="password" placeholder="密码">
+                                <div class="help-block text-left"></div>
+                            </div>
+{#                            <button class="btn register" type="submit">登录实验楼</button>#}
+                            <input type="submit" class="btn register" value="登录实验楼">
+                            <p class="tip">点击"加入实验楼"，表示您已经同意我们的<a href="privacy/index.html" target="_blank"> 隐私条款</a></P>
+                        </form>
+                        {% else %}
+                        <form action="/register/" method="post">
                             <div class="form-group">
                                 <input class="form-control" name="name" id="name" type="text" placeholder="昵称">
                                 <div class="help-block text-left"></div>
@@ -30,9 +45,11 @@
                                 <input class="form-control" name="password" id="password" type="password" placeholder="密码">
                                 <div class="help-block text-left"></div>
                             </div>
-                            <button class="btn register" type="submit">加入实验楼</button>
+
+                            <input type="submit" value="加入实验楼" class="btn register">
                             <p class="tip">点击"加入实验楼"，表示您已经同意我们的<a href="privacy/index.html" target="_blank"> 隐私条款</a></P>
                         </form>
+                        {% endif %}
 
                     </div>
 
