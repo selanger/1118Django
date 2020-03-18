@@ -51,7 +51,7 @@ class Label(Model):
 class Course(Model):
     name = db.Column(db.String(32))   ## 课程名字
     description = db.Column(db.String(32))  ## 课程描述
-    picture = db.Column(db.String(64))     ## 图片
+    picture = db.Column(db.String(64),default="1.jpg")     ## 图片
     show_number = db.Column(db.Integer)     ##  观看人数
     status = db.Column(db.Integer,default=1)       ## 状态 1代表已上线  0 代表未上线
     type = db.Column(db.Integer,default=1)       ## 类别  1代表 免费 2 代表限免 3代表vip
