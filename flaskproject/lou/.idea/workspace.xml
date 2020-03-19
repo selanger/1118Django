@@ -2,24 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a62ae4c-b88f-40fa-aed5-b06e783515c4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../blproject/.idea/blproject.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/course/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/course/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/course/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/user/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/user/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blproject/user/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/.idea/blueprintproject.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/course/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/course/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/course/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/user/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/user/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blueprintproject/user/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blproject/course/static/01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blproject/static/hsq.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blproject/course/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blproject/course/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/course/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/course/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/course/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/course/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/course/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/user/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/user/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/user/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/user/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blueprintproject/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../blueprintproject/blueprintproject/user/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -244,7 +240,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="70" />
     <option name="y" value="9" />
     <option name="width" value="1496" />
@@ -447,7 +443,7 @@
       <workItem from="1584407203098" duration="17463000" />
       <workItem from="1584493121857" duration="15169000" />
       <workItem from="1584533862380" duration="1613000" />
-      <workItem from="1584580051211" duration="2926000" />
+      <workItem from="1584580051211" duration="3524000" />
     </task>
     <task id="LOCAL-00001" summary="flask 项目优化及模板继承">
       <created>1583985137236</created>
@@ -488,10 +484,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="89127000" />
+    <option name="totallyTimeSpent" value="89725000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="70" y="9" width="1496" height="1022" extended-state="0" />
+    <frame x="70" y="9" width="1496" height="1022" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3356546" />

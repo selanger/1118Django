@@ -1,6 +1,7 @@
-from course import course_bl
-from course.models import *
-
+# from course import course_bl
+# from course.models import *
+from blueprintproject.course import course_bl
+from blueprintproject.course.models import *
 
 @course_bl.route("/index/")
 def index():

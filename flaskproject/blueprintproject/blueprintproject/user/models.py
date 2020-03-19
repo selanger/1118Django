@@ -1,4 +1,6 @@
-from main import db
+# 模型
+# from main import db
+from blueprintproject import db
 class Model(db.Model):
     __abstract__ = True     ### 表名这个类为  抽象类
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
