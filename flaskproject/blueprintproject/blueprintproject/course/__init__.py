@@ -5,5 +5,9 @@ course_bl = Blueprint("course",__name__)
 api = Api(course_bl)
 
 # from course.views import *
+from .models import *
 from blueprintproject.course.views import *
-api.add_resource(CoueseDemo,"/demo/")
+# 收集路由
+api.add_resource(CoursesApi,"/coursesapi/",
+                 "/test/",
+                 "/coursesapi/<int:id>/")

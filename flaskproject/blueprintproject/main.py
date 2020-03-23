@@ -1,7 +1,10 @@
 ### 项目的控制文件
 from blueprintproject import createApp
 from flask_script import Manager,Command
-app = createApp("settings.Config")
+from flask_migrate import MigrateCommand
+# app = createApp("settings.Config")
+from settings import Config
+app = createApp(Config)
 ## 管理app
 manager = Manager(app)
 class Hello(Command):   ## 自定义命令   需要继承 Command父类
@@ -15,6 +18,7 @@ class Runserver(Command):
 
 manager.add_command("hello",Hello)    ### 添加命令  第一个参数： 命令的名字  第二个参数： 命令的内容
 manager.add_command("runserver8000",Runserver)
+manager.add_command("db",MigrateCommand)
 if __name__ == '__main__':
     # from course.models import *
     # from user.models import *

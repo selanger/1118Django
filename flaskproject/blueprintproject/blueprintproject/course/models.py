@@ -1,4 +1,3 @@
-# from main import db
 from blueprintproject import db
 class Model(db.Model):
     __abstract__ = True     ### 表名这个类为  抽象类
